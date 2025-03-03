@@ -62,7 +62,7 @@ class LoginGragment : Fragment() {
 
         val navController = findNavController()
 
-        view.findViewById<Button>(R.id.auth_button)?.setOnClickListener {
+        view.findViewById<Button>(R.id.sign_in_button)?.setOnClickListener {
             val email =view.findViewById<EditText>(R.id.emailInLogin)?.text.toString()
             val password =view.findViewById<EditText>(R.id.passwordInLogin)?.text.toString()
             MainActivity.signInWithEmail(email,password, onSuccess = {
@@ -70,7 +70,7 @@ class LoginGragment : Fragment() {
             })
         }
 
-        view.findViewById<LinearLayout>(R.id.to_register_text)?.setOnClickListener {
+        view.findViewById<TextView>(R.id.to_register_text)?.setOnClickListener {
 
             Log.d("asfdadsfsadfadsfadsfsfd","to register")
             navController.navigate(R.id.action_login_fragment_to_register)
