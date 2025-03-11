@@ -41,5 +41,18 @@
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/numberVerificationFragment"
+        android:name="io.oitech.med_application.NumberVerificationFragment"
+        android:label="fragment_number_verification"
+        tools:layout="@layout/fragment_number_verification" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="io.oitech.med_application.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

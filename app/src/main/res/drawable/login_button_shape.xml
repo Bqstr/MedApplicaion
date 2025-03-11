@@ -2,8 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Background color (optional, remove if not needed) -->
-    <solid android:color="#FFFFFF" />
-
     <!-- Border (stroke) -->
     <stroke
         android:width="2dp"

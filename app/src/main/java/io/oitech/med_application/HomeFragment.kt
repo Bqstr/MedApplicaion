@@ -1,6 +1,7 @@
 package io.oitech.med_application
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -11,6 +12,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,9 +51,25 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
-        setHasOptionsMenu(true) // Enable options menu
+
+        Log.d("HomeFragment", "onViewCreated called") // Debugging log
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.home_doctors_recuclerView)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
+
+        val doctorsList = listOf(
+            HomeDoctorUiItem("Dr. Smith", "https://example.com/image1.jpg", "Cardiologist", 6000.0, "5.0"),
+            HomeDoctorUiItem("Dr. Jane", "https://example.com/image2.jpg", "Dentist", 5000.0, "4.5")
+        )
+
+        recyclerView.adapter = HomeDoctorsAdapters(doctorsList)
+
+
+        recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50)) // 50px padding at start & end
+
+
+        Log.d("HomeFragment", "RecyclerView item count: ${doctorsList.size}")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -60,11 +81,7 @@ class HomeFragment : Fragment() {
         val navController =findNavController()
         return when (item.itemId) {
             R.id.exit -> {
-                MainActivity.logoutUser()
-                findNavController().popBackStack()
-                findNavController().clearBackStack(R.id.homeFragment)
-                findNavController().clearBackStack(R.id.registerFragment)
-                findNavController().clearBackStack(R.id.loginFragment)
+
 
 
 

@@ -1,25 +1,296 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".HomeFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+
+    <LinearLayout
+        android:layout_marginHorizontal="24dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_home"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineHeight="32dp"
+            android:text="Find your desire\n healt solution"
+            android:textColor="@color/black"
+            android:textFontWeight="600"
+            android:textSize="22sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+
+
+
+    </LinearLayout>
+
+
+    <EditText
+        android:layout_marginHorizontal="24dp"
+        android:paddingStart="18dp"
+        android:paddingVertical="12dp"
+        android:background="@drawable/edit_text_background"
+        android:drawablePadding="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableStart="@drawable/search"
+        android:hint="Search doctor, drugs, articles..."
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_gray"
+        android:textSize="12dp"
+
+
+        />
+    
+
+    <LinearLayout
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
+        <androidx.cardview.widget.CardView
+            app:cardElevation="4dp"
+            app:cardCornerRadius="16dp"
+            app:cardUseCompatPadding="true"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:title="Home Screen"
-             />
+            android:layout_height="match_parent">
 
+            <ImageView
+                app:tint="@color/black"
+                android:src="@drawable/doctor_tool"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:textSize="14sp"
+                android:textColor="@color/different_gray"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Doctor"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
+            <androidx.cardview.widget.CardView
+                app:cardElevation="4dp"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="true"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    app:tint="@color/black"
+                    android:src="@drawable/pharmacy"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:textSize="14sp"
+                android:textColor="@color/different_gray"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pharmacy"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
+            <androidx.cardview.widget.CardView
+                app:cardElevation="4dp"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="true"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    app:tint="@color/black"
+                    android:src="@drawable/hospital"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:textSize="14sp"
+                android:textColor="@color/different_gray"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hospital"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@drawable/home_banner"
+        android:layout_width="match_parent"
+        android:layout_height="135dp"
+        android:backgroundTint="@color/strange_color"
+        android:layout_marginHorizontal="20dp"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/banner_woman_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="18dp" />
+
+            <TextView
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineHeight="25dp"
+                android:text="Early protection for \nyour family health"
+                android:textSize="18sp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"/>
+
+            <FrameLayout
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/blue"
+                android:background="@drawable/banner_button_back"
+
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="10dp"
+
+                >
+                <TextView
+                    android:textSize="12sp"
+                    android:lineHeight="14dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Learn more"
+
+
+                    />
+
+            </FrameLayout>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"/>
+
+
+
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/banner_woman_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/woman_banner"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <LinearLayout
+        android:paddingHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingBottom="16dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Top Doctor"
+            android:textSize="16sp"
+            android:lineHeight="20sp"
             />
-    </com.google.android.material.appbar.AppBarLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue"
+            android:text="See all"
+            android:textSize="14sp"
+            android:lineHeight="20sp"
+            />
+
+
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_doctors_recuclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="horizontal"
+        />
+
     <!-- TODO: Update blank fragment layout -->
 
-</FrameLayout>
+</LinearLayout>

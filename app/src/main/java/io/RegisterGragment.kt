@@ -53,9 +53,10 @@ class RegisterGragment : Fragment() {
 
         val navController = findNavController()
 
-        view.findViewById<Button>(R.id.auth_button)?.setOnClickListener {
+        view.findViewById<Button>(R.id.sign_up_button)?.setOnClickListener {
             val emailText = email.text.toString().trim()
             val passwordText = password.text.toString().trim()
+
 
             // Check if fields are not empty
             if (emailText.isEmpty() || passwordText.isEmpty()) {
@@ -64,6 +65,7 @@ class RegisterGragment : Fragment() {
             }
 
             MainActivity.register(emailText, passwordText, onSuccess = {
+                MainActivity.showSuccessAlert(requireContext())
                 navController.navigate(R.id.action_register_fragment_to_homeScreen)
                 findNavController().clearBackStack(R.id.registerFragment)
                 findNavController().clearBackStack(R.id.loginFragment)

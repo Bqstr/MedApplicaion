@@ -59,7 +59,6 @@
                 android:layout_height="56dp"
 
                 android:background="@drawable/edit_text_background"
-                android:backgroundTint="@color/light_gray"
                 android:drawableStart="@drawable/group"
                 android:drawablePadding="8dp"
 
@@ -79,7 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@drawable/edit_text_background"
-                android:backgroundTint="@color/light_gray"
                 android:drawableStart="@drawable/password"
                 android:drawablePadding="8dp"
                 android:ems="10"
@@ -198,6 +196,7 @@
             android:layout_height="24dp"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/google_sign_in"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 

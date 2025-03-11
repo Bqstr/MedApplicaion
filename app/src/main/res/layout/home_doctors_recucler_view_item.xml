@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+
+    android:background="@drawable/home_doctors_item_back"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="118dp"
+    android:layout_height="174dp"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <ImageView
+        android:id="@+id/home_doctor_item_image"
+        android:clipToOutline="true"
+        android:background="@drawable/circle_shape"
+        android:scaleType="center"
+        android:src="@drawable/doctor_mock_image"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center_horizontal"
+
+        />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="12dp" />
+
+    <TextView
+        android:id="@+id/home_doctor_item_name"
+        android:lineHeight="14dp"
+        android:paddingStart="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Dr. Marcus Horizon"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="4dp" />
+
+    <TextView
+        android:id="@+id/home_doctor_item_speciality"
+
+        android:lineHeight="12dp"
+        android:paddingStart="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Chardiologist"
+        android:textColor="@color/text_gray"
+        android:textSize="10sp"
+        />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="10dp" />
+
+    <LinearLayout
+        android:layout_marginHorizontal="10dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:backgroundTint="@color/strange_color"
+        android:background ="@drawable/home_doctors_item_rating_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/star"
+            android:padding="3dp"
+            />
+        <TextView
+            android:id="@+id/home_doctor_item_rating"
+            android:paddingEnd="2dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4,7"
+            android:textSize="8sp"
+            android:lineHeight="10sp"
+            android:textColor="@color/blue"
+
+            />
+    </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/location"
+
+            />
+
+        <TextView
+            android:id="@+id/home_doctor_item_distance"
+            android:layout_gravity="center_vertical"
+            android:textSize="8dp"
+            android:paddingStart="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="500km away"
+            android:textColor="@color/text_gray"
+
+            />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="14dp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+</LinearLayout>
