@@ -1,22 +1,17 @@
-package io.oitech.med_application
+package io.oitech.med_application.fragments.doctor_list
 
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-
+import io.oitech.med_application.R
+import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
+import io.oitech.med_application.fragments.homeFragment.HomeDoctorsAdapters
+import io.oitech.med_application.fragments.homeFragment.StartEndPaddingItemDecoration
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,10 +20,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
+ * Use the [DoctorsListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : Fragment() {
+class DoctorsListFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -46,53 +41,30 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_doctors_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("HomeFragment", "onViewCreated called") // Debugging log
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.home_doctors_recuclerView)
+        val recyclerView: RecyclerView = view.findViewById(R.id.top_doctor_recucler_view)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.VERTICAL, false)
 
         val doctorsList = listOf(
-            HomeDoctorUiItem("Dr. Smith", "https://example.com/image1.jpg", "Cardiologist", 6000.0, "5.0"),
-            HomeDoctorUiItem("Dr. Jane", "https://example.com/image2.jpg", "Dentist", 5000.0, "4.5")
+            HomeDoctorUiItem(name ="Dr. Smith", image ="https://example.com/image1.jpg", speciality ="Cardiologist", distance =6000.0, rating ="5.0",id =0),
+            HomeDoctorUiItem(name ="Dr. Jane", image ="https://example.com/image2.jpg",speciality = "Dentist", distance =5000.0,rating = "4.5",id =1)
         )
 
-        recyclerView.adapter = HomeDoctorsAdapters(doctorsList)
+        recyclerView.adapter = TopDoctorListAdapter(doctorsList)
 
 
-        recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50)) // 50px padding at start & end
+        //recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50)) // 50px padding at start & end
 
 
         Log.d("HomeFragment", "RecyclerView item count: ${doctorsList.size}")
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_home, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val navController =findNavController()
-        return when (item.itemId) {
-            R.id.exit -> {
-
-
-
-
-
-
-
-
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     companion object {
@@ -102,12 +74,12 @@ class HomeFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
+         * @return A new instance of fragment DoctorsListFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
+            DoctorsListFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

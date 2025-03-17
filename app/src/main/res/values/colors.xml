@@ -13,4 +13,7 @@
     <color name="custom_alert_success_color">#F5F8FF</color>
     <color name="profile_information_color">#C1F3EF</color>
     <color name="red">#FF0000</color>
+    <color name="doctor_discription_color">#717784</color>
+    <color name="line_color">#E8F3F1</color>
+    <color name="time_slot_border_color">#DEECE9</color>
 </resources>

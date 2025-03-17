@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_marginHorizontal="20dp"
+
+    android:layout_marginVertical="8dp"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="126dp"
+    android:background="@drawable/top_doctors_list_item_back">
+
+    <Space
+        android:layout_width="8dp"
+        android:layout_height="wrap_content"/>
+    
+    <ImageView
+        android:id="@+id/top_doctor_list_item_image"
+
+        android:layout_gravity="center"
+        android:background="@drawable/eight_dp_radius_background"
+        android:scaleType="centerCrop"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:src="@drawable/doctor_mock_image"
+
+        />
+    
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginStart="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"/>
+        <TextView
+            android:id="@+id/top_doctor_list_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dr. Marcus Horizon"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+
+            />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="4dp"/>
+
+        <TextView
+            android:id="@+id/top_doctor_list_item_speciality"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Cardiologist"
+            android:textColor="@color/text_gray"
+            />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp"/>
+        <LinearLayout
+            android:backgroundTint="@color/strange_color"
+            android:background ="@drawable/home_doctors_item_rating_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/star"
+                android:padding="3dp"
+                />
+            <TextView
+                android:id="@+id/top_doctor_list_item_rating"
+
+                android:paddingEnd="2dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4,7"
+                android:textSize="8sp"
+                android:lineHeight="10sp"
+                android:textColor="@color/blue"
+
+                />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="8dp"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/location"
+
+                />
+
+            <TextView
+                android:id="@+id/top_doctor_list_item_distance"
+                android:layout_gravity="center_vertical"
+                android:textSize="8dp"
+                android:paddingStart="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="500km away"
+                android:textColor="@color/text_gray"
+
+                />
+        </LinearLayout>
+
+        
+        
+    </LinearLayout>
+    
+
+</LinearLayout>

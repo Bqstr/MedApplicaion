@@ -1,4 +1,5 @@
-package io.oitech.med_application
+package io.oitech.med_application.fragments.doctor_list
+
 
 import android.graphics.Rect
 import android.view.LayoutInflater
@@ -6,22 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import io.oitech.med_application.R
+import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
 
-class HomeDoctorsAdapters(private val items: List<HomeDoctorUiItem>) :
-    RecyclerView.Adapter<HomeDoctorsAdapters.ItemViewHolder>() {
+class TopDoctorListAdapter(private val items: List<HomeDoctorUiItem>) :
+    RecyclerView.Adapter<TopDoctorListAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(R.id.home_doctor_item_name)
+        val name: TextView = view.findViewById(R.id.top_doctor_list_item_name)
         //val image: TextView = view.findViewById(R.id.home_doctor_item_image)
-        val speciality: TextView = view.findViewById(R.id.home_doctor_item_speciality)
-        val rating: TextView = view.findViewById(R.id.home_doctor_item_rating)
-        val distance:TextView=view.findViewById(R.id.home_doctor_item_distance)
+        val speciality: TextView = view.findViewById(R.id.top_doctor_list_item_speciality)
+        val rating: TextView = view.findViewById(R.id.top_doctor_list_item_rating)
+        val distance:TextView=view.findViewById(R.id.top_doctor_list_item_distance)
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.home_doctors_recucler_view_item, parent, false)
+            .inflate(R.layout.top_doctors_list_item, parent, false)
         return ItemViewHolder(view)
     }
 
@@ -80,10 +83,4 @@ class StartEndPaddingItemDecoration(
 
 
 
-data class HomeDoctorUiItem(
-    val name:String,
-    val image:String ="",
-    val speciality:String,
-    val distance:Double,
-    val rating:String
-)
+

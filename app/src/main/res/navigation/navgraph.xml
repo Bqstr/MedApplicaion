@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="io.oitech.med_application.LoginGragment"
+        android:name="io.oitech.med_application.fragments.login.LoginFragment"
         android:label="loginFragment">
         <action
             android:id="@+id/action_login_fragment_to_homeScreen"
@@ -35,7 +35,7 @@
         </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="io.oitech.med_application.HomeFragment"
+        android:name="io.oitech.med_application.fragments.homeFragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -44,10 +44,13 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_doctorsListFragment2"
+            app:destination="@id/doctorsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/numberVerificationFragment"
-        android:name="io.oitech.med_application.NumberVerificationFragment"
+        android:name="io.oitech.med_application.fragments.login.NumberVerificationFragment"
         android:label="fragment_number_verification"
         tools:layout="@layout/fragment_number_verification" />
     <fragment
@@ -55,4 +58,9 @@
         android:name="io.oitech.med_application.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/doctorsListFragment"
+        android:name="io.oitech.med_application.fragments.doctor_list.DoctorsListFragment"
+        android:label="fragment_doctors_list"
+        tools:layout="@layout/fragment_doctors_list" />
 </navigation>
