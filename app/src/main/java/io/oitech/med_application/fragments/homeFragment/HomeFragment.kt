@@ -10,10 +10,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.R
+import io.oitech.med_application.fragments.MainViewModel
+import io.oitech.med_application.utils.Resource
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -26,7 +31,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : Fragment() {
+@AndroidEntryPoint
+class HomeFragment : Fragment(),OnItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -38,7 +44,7 @@ class HomeFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
-
+    private val viewModel: MainViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,14 +61,16 @@ class HomeFragment : Fragment() {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.home_doctors_recuclerView)
 
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
 
-        val doctorsList = listOf(
-            HomeDoctorUiItem(name ="Dr. Smith", image ="https://example.com/image1.jpg", speciality ="Cardiologist", distance =6000.0, rating ="5.0",id =0),
-            HomeDoctorUiItem(name ="Dr. Jane", image ="https://example.com/image2.jpg",speciality = "Dentist", distance =5000.0,rating = "4.5",id =1)
-        )
+//        val doctorsList = listOf(
+//            HomeDoctorUiItem(name ="Dr. Smith", image ="https://example.com/image1.jpg", speciality ="Cardiologist", distance =6000.0, rating ="5.0",id =0),
+//            HomeDoctorUiItem(name ="Dr. Jane", image ="https://example.com/image2.jpg",speciality = "Dentist", distance =5000.0,rating = "4.5",id =1)
+//        )
+        val adapter =HomeDoctorsAdapters(emptyList(),this)
 
-        recyclerView.adapter = HomeDoctorsAdapters(doctorsList)
+        recyclerView.adapter = adapter
 
 
         recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50)) // 50px padding at start & end
@@ -72,9 +80,17 @@ class HomeFragment : Fragment() {
             navController.navigate(R.id.action_homeFragment_to_doctorsListFragment2)
         }
 
+        viewModel.getAllDoctors()
+        viewModel.doctors.observe(viewLifecycleOwner) { newList ->
+            if(newList is Resource.Success ) {
+                if(newList.data !=null) {
+                    adapter.updateList(newList.data)  // This automatically updates the RecyclerView
+                }
+            }
+        }
 
 
-        Log.d("HomeFragment", "RecyclerView item count: ${doctorsList.size}")
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,19 +101,11 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val navController =findNavController()
         return when (item.itemId) {
-            R.id.exit -> {
-
-
-
-
-
-
-
-
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
+
+
+
     }
 
     companion object {
@@ -118,5 +126,17 @@ class HomeFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onItemClick(position: Int) {
+        Log.d("asdfasdfasdfasdfasdf","here")
+        if(viewModel.doctors.value is Resource.Success) {
+            val doctor = (viewModel.doctors.value as Resource.Success<List<HomeDoctorUiItem>>).data?.get(position)
+
+            val bundle = Bundle()
+            bundle.putParcelable("doctorDetails", doctor)
+            findNavController().navigate(R.id.action_homeFragment_to_doctorDetailFragment, bundle)
+        }
+
     }
 }

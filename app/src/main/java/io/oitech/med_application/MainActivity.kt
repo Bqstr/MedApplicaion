@@ -1,5 +1,6 @@
 package io.oitech.med_application
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -10,6 +11,12 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCaller
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.registerForActivityResult
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -26,27 +33,54 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.databinding.ActivityMainBinding
+import io.oitech.med_application.fragments.MainViewModel
+import io.oitech.med_application.fragments.homeFragment.DateOfTheWeek
+import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
+import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItemWithout
+import io.oitech.med_application.fragments.homeFragment.TimeSlot
 import kotlin.jvm.Throws
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    val database = FirebaseDatabase.getInstance()
+    val doctorRef = database.getReference("doctors")
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val mainViewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
-
-        Thread.sleep(3000)
-        installSplashScreen()
-
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        auth = Firebase.auth
+        val auth = Firebase.auth
 
 
+
+        val doctor = HomeDoctorUiItem(
+            id = 1,
+            name = "Dr. John Doe",
+            image = "https://example.com/image.jpg",
+            speciality = "Cardiologist",
+            distance = 5.0,
+            rating = "4.8",
+            description = "Experienced heart specialist",
+            listOfTimes = listOf(
+                DateOfTheWeek("Monday", 11,"date name", listOf(
+                TimeSlot("10:00-11:00", available = true)
+            ))
+            )
+        )
 
 
 
@@ -70,13 +104,18 @@ class MainActivity : AppCompatActivity() {
 
             bottomNavigationView.setupWithNavController(navController)
 
-            if (auth.currentUser != null) {
-                navController.navigate(R.id.action_login_fragment_to_homeScreen)
+
+            if(mainViewModel.firstLaunch.value){
+                navController.navigate(R.id.onboardingFragment)
+            }else {
+                if (auth.currentUser != null) {
+                    navController.navigate(R.id.action_login_fragment_to_homeScreen)
+                }
             }
 
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 when (destination.id) {
-                    R.id.homeFragment,R.id.profileFragment -> {
+                    R.id.homeFragment,R.id.profileFragment,R.id.scheduleFragment -> {
                         bottomNavigationView.visibility = View.VISIBLE
                     }
 
@@ -94,16 +133,12 @@ class MainActivity : AppCompatActivity() {
                         findNavController(R.id.nav_host_fragment).navigate(R.id.homeFragment)
                         true
                     }
-                    R.id.exit ->{
-                        MainActivity.logoutUser()
-                        findNavController(R.id.nav_host_fragment).navigate(R.id.loginFragment)
-                        navController.clearBackStack(R.id.profileFragment)
-
-                        navController.clearBackStack(R.id.loginFragment)
-                    }
-
                     R.id.profile_bottom_bar ->{
                         findNavController(R.id.nav_host_fragment).navigate(R.id.profileFragment)
+                        true
+                    }
+                    R.id.calendar_bottom_bar ->{
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.scheduleFragment)
                         true
                     }
 
@@ -117,6 +152,21 @@ class MainActivity : AppCompatActivity() {
 
 
         }
+
+
+
+         val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val uri =data?.data
+                //setImage
+
+            }else{
+                Toast.makeText(this,"No Image ",Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
 
 
 
@@ -137,14 +187,14 @@ class MainActivity : AppCompatActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
-                firebaseAuthWithGoogle(account.idToken!!)
+                firebaseAuthWithGoogle(account.idToken!!, auth = Firebase.auth)
             } catch (e: ApiException) {
                 Toast.makeText(this, "Sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
+    private fun firebaseAuthWithGoogle(idToken: String,auth: FirebaseAuth) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
@@ -163,7 +213,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
+
     companion object {
+
         private const val RC_SIGN_IN = 9001
 
         fun showSuccessAlert(context: Context) {
@@ -185,49 +238,7 @@ class MainActivity : AppCompatActivity() {
             alertDialog.show()
         }
 
-         lateinit var auth: FirebaseAuth
 
-        fun register(email: String, password: String, onSuccess: () -> Unit) {
-
-            Log.e("asdasdasdasdasd", "start")
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.e("asdasdasdasdasd", "successs")
-
-
-                        // Sign-up successful
-                        val user = auth.currentUser
-                        onSuccess()
-                    } else {
-                        Log.e("asdasdasdasdasd", "Regisrter failed: ${task.exception?.message}")
-                    }
-                }
-        }
-
-
-        fun signInWithEmail(email: String, password: String, onSuccess: () -> Unit) {
-            Log.e("jdsfhkjsdhfkjsdf", "jkfsdahkjlsdfh")
-
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // Sign-in successful
-                        val user = auth.currentUser
-                        onSuccess()
-                    } else {
-                        Log.e("Auth", "Sign-up failed: ${task.exception?.message}")
-
-
-                    }
-                }
-        }
-
-
-        fun logoutUser() {
-            FirebaseAuth.getInstance().signOut()
-        }
 
         private fun showSuccessDialog() {
         }

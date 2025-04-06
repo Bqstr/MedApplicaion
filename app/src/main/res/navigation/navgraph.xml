@@ -47,6 +47,17 @@
         <action
             android:id="@+id/action_homeFragment_to_doctorsListFragment2"
             app:destination="@id/doctorsListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_doctorDetailFragment"
+            app:destination="@id/doctorDetailFragment" >
+
+            <argument
+                android:name="doctorDetails"
+                app:argType="io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem" />
+        </action>
+        <action
+            android:id="@+id/action_homeFragment_to_scheduleFragment"
+            app:destination="@id/scheduleFragment" />
     </fragment>
     <fragment
         android:id="@+id/numberVerificationFragment"
@@ -63,4 +74,33 @@
         android:name="io.oitech.med_application.fragments.doctor_list.DoctorsListFragment"
         android:label="fragment_doctors_list"
         tools:layout="@layout/fragment_doctors_list" />
+    <fragment
+        android:id="@+id/doctorDetailFragment"
+        android:name="io.oitech.med_application.fragments.DoctorDetailFragment"
+        android:label="fragment_doctor_detail"
+        tools:layout="@layout/fragment_doctor_detail" >
+
+
+        <argument
+            android:name="doctorDetails"
+            app:argType="io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem" />
+        <action
+            android:id="@+id/action_doctorDetailFragment_to_appointmentFragment"
+            app:destination="@id/appointmentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/appointmentFragment"
+        android:name="io.oitech.med_application.fragments.AppointmentFragment"
+        android:label="fragment_appointment"
+        tools:layout="@layout/fragment_appointment" />
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="io.oitech.med_application.fragments.onBoarding.OnboardingFragment"
+        android:label="fragment_onboarding"
+        tools:layout="@layout/fragment_onboarding" />
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="io.oitech.med_application.fragments.schedule.ScheduleFragment"
+        android:label="fragment_schedule"
+        tools:layout="@layout/fragment_schedule" />
 </navigation>

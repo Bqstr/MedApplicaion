@@ -32,7 +32,7 @@ class TopDoctorListAdapter(private val items: List<HomeDoctorUiItem>) :
         val item = items[position]
         holder.name.text = item.name
         holder.speciality.text = item.speciality
-        holder.distance.text =item.speciality
+        holder.distance.text ="${item.distance}m"
         //holder.image.text =item.image
         holder.rating.text =item.rating
     }

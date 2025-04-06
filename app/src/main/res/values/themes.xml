@@ -8,6 +8,14 @@
     <style name="Theme.Med_Application" parent="Base.Theme.Med_Application" />
 
     <style name="Theme.App.SplashScreen" parent ="Base.Theme.Med_Application">
+
+
     </style>
+
+
+
+
+
+
 
 </resources>

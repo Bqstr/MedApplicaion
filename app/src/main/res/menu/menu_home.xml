@@ -30,9 +30,5 @@
         android:icon="@drawable/user_home_bottom"
         android:title="Favorite"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/exit"
-        android:icon="@drawable/common_full_open_on_phone"
-        android:title="Favorite"
-        app:showAsAction="always" />
+
 </menu>
