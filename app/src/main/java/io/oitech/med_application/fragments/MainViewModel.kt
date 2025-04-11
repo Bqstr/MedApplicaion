@@ -32,6 +32,11 @@ class MainViewModel @Inject constructor(
     private val firstLaunchManager: FirstLaunchManager
 ) : ViewModel() {
 
+
+
+
+    val addressFromGeocode =MutableLiveData<Resource<String>>(Resource.Unspecified())
+
     val doctors = MutableLiveData<Resource<List<HomeDoctorUiItem>>>(Resource.Unspecified())
 
     val firstLaunch = MutableStateFlow<Boolean>(false)

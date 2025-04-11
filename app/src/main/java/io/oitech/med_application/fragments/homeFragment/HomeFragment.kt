@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -68,7 +69,7 @@ class HomeFragment : Fragment(),OnItemClickListener {
 //            HomeDoctorUiItem(name ="Dr. Smith", image ="https://example.com/image1.jpg", speciality ="Cardiologist", distance =6000.0, rating ="5.0",id =0),
 //            HomeDoctorUiItem(name ="Dr. Jane", image ="https://example.com/image2.jpg",speciality = "Dentist", distance =5000.0,rating = "4.5",id =1)
 //        )
-        val adapter =HomeDoctorsAdapters(emptyList(),this)
+        val adapter =HomeDoctorsAdapters(emptyList(),this,requireContext())
 
         recyclerView.adapter = adapter
 
@@ -78,6 +79,9 @@ class HomeFragment : Fragment(),OnItemClickListener {
 
         view.findViewById<TextView>(R.id.see_all_text).setOnClickListener{
             navController.navigate(R.id.action_homeFragment_to_doctorsListFragment2)
+        }
+        view.findViewById<LinearLayout>(R.id.hospital_home).setOnClickListener{
+            navController.navigate(R.id.action_homeFragment_to_mapFragment)
         }
 
         viewModel.getAllDoctors()

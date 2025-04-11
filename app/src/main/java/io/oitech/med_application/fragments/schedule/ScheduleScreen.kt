@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposableTarget
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.oitech.med_application.Color.ColorOfDetailsOfSchedule
@@ -36,19 +36,20 @@ import io.oitech.med_application.Color.ColorOfSpecialityInSchedule
 import io.oitech.med_application.Color.ColorScheduleWeakBlue
 import io.oitech.med_application.R
 import io.oitech.med_application.fragments.MainViewModel
+import io.oitech.med_application.utils.ComposableUtils.FirebaseImageLoader
 import io.oitech.med_application.utils.ComposableUtils.Space
 import io.oitech.med_application.utils.Resource
 import io.oitech.med_application.utils.Utils.noRippleClickable
 
 @Composable
-fun ScheduleScreen(viewModel : MainViewModel) {
+fun ScheduleScreen(viewModel: MainViewModel) {
 //    val scheduledItems = remember {
 //        mutableStateOf(listOf<ScheduleUIItem>(
 //            ScheduleUIItem(doctorName = "saasdsa", status = ScheduleStatus.COMPLETED, isConfirmed = true, doctorImage = "asd", doctorSpeciality = "speciality", time ="2025-03-18 14:30:45" )
 //        ))
 //    }
 
-    val scheduledItems =viewModel.scheduleList.collectAsState().value
+    val scheduledItems = viewModel.scheduleList.collectAsState().value
 
 
 
@@ -172,9 +173,9 @@ fun ScheduleScreen(viewModel : MainViewModel) {
         Space(20.dp)
 
         LazyColumn(Modifier.fillMaxWidth()) {
-            if(scheduledItems is Resource.Success) {
-                items(scheduledItems.data?: emptyList()) {
-                    if(it.status==selectedScheduleStatus.value) {
+            if (scheduledItems is Resource.Success) {
+                items(scheduledItems.data ?: emptyList()) {
+                    if (it.status == selectedScheduleStatus.value) {
                         ScheduleListComposeItem(it, onReschedule = {}, onCancel = {})
                     }
                 }
@@ -221,24 +222,24 @@ fun ScheduleListComposeItem(
 
             }
             Space()
-            Image(
-                painter = painterResource(id = R.drawable.doctor_mock_image),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
+            FirebaseImageLoader(
+                imagePath = scheduleItem.doctorImage, modifier = Modifier
                     .size(46.dp)
                     .clip(
                         CircleShape
-                    )
+                    ), contentScale =ContentScale.Crop
             )
+
         }
         Space(25.dp)
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp))
+                .padding(horizontal = 16.dp)
+        )
         {
-            Icon(modifier =Modifier.size(13.dp),
+            Icon(
+                modifier = Modifier.size(13.dp),
                 painter = painterResource(id = R.drawable.calendar),
                 contentDescription = null,
                 tint = ColorOfDetailsOfSchedule
@@ -289,21 +290,27 @@ fun ScheduleListComposeItem(
             )
 
 
-
-
-
         }
         Space(14.dp)
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp))
+                .padding(horizontal = 16.dp)
+        )
         {
-            Box(modifier = Modifier
-                .weight(1f)
-                .background(ColorScheduleWeakBlue, RoundedCornerShape(8.dp))
-                .padding(vertical = 6.dp)){
-                Text(lineHeight = 32.sp,text = "Cancel", fontSize = 14.sp,color = ColorOfDetailsOfSchedule,modifier =Modifier.align(Alignment.Center))
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .background(ColorScheduleWeakBlue, RoundedCornerShape(8.dp))
+                    .padding(vertical = 6.dp)
+            ) {
+                Text(
+                    lineHeight = 32.sp,
+                    text = "Cancel",
+                    fontSize = 14.sp,
+                    color = ColorOfDetailsOfSchedule,
+                    modifier = Modifier.align(Alignment.Center)
+                )
 
             }
             Space(16.dp)
@@ -311,8 +318,15 @@ fun ScheduleListComposeItem(
                 modifier = Modifier
                     .weight(1f)
                     .background(colorResource(id = R.color.blue), RoundedCornerShape(8.dp))
-                    .padding(vertical = 6.dp)){
-                Text(lineHeight = 32.sp,text = "Reschedule", fontSize = 14.sp,color =Color.White,modifier =Modifier.align(Alignment.Center))
+                    .padding(vertical = 6.dp)
+            ) {
+                Text(
+                    lineHeight = 32.sp,
+                    text = "Reschedule",
+                    fontSize = 14.sp,
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
         }
         Space(16.dp)

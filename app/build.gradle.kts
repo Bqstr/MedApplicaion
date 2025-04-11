@@ -9,8 +9,14 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
-    alias(libs.plugins.google.gms.google.services)
+    //alias(libs.plugins.google.gms.google.services)
+
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("com.google.gms.google-services")
+
+
 }
+
 
 android {
     namespace = "io.oitech.med_application"
@@ -91,7 +97,7 @@ dependencies {
 
     // TODO: Add the dependencies for Firebase products you want to use
     // When using the BoM, don't specify versions in Firebase dependencies
-    implementation("com.google.firebase:firebase-analytics")
+    //implementation("com.google.firebase:firebase-analytics")
 
 
     // Add the dependencies for any other desired Firebase products
@@ -132,6 +138,16 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+
+
+
+//Google Services & Maps
+    implementation("com.google.maps.android:maps-compose:2.9.0")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-maps:17.0.0")
+    implementation("com.google.maps.android:maps-ktx:5.0.0")
+
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
 
 

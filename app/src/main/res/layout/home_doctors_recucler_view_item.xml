@@ -12,17 +12,30 @@
         android:layout_width="match_parent"
         android:layout_height="20dp" />
 
-    <ImageView
-        android:id="@+id/home_doctor_item_image"
-        android:clipToOutline="true"
-        android:background="@drawable/circle_shape"
-        android:scaleType="center"
-        android:src="@drawable/doctor_mock_image"
+    <FrameLayout
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center_horizontal">
 
-        />
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/home_doctor_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
+            android:background="@drawable/circle_shape"
+            android:src="@drawable/doctor_mock_image"
+            />
+
+<!--        <ProgressBar-->
+<!--            android:id="@+id/home_doctor_item_progress"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:visibility="gone" />-->
+    </FrameLayout>
+
 
     <Space
         android:layout_width="wrap_content"

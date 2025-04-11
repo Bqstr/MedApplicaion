@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,6 +30,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -67,6 +70,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
         val doctor = HomeDoctorUiItem(
             id = 1,
             name = "Dr. John Doe",
@@ -82,6 +88,12 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
+
+
+
+        binding.callAmbulance.setOnClickListener{
+            dialEmergencyNumber("103")
+        }
 
 
 
@@ -114,6 +126,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             navController.addOnDestinationChangedListener { _, destination, _ ->
+                if(destination.id==R.id.homeFragment){
+                    binding.callAmbulance.visibility =View.VISIBLE
+                }else{
+                    binding.callAmbulance.visibility =View.GONE
+
+                }
                 when (destination.id) {
                     R.id.homeFragment,R.id.profileFragment,R.id.scheduleFragment -> {
                         bottomNavigationView.visibility = View.VISIBLE
@@ -124,6 +142,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+
 
 
             binding.homeBottomBar.setOnItemSelectedListener { item ->
@@ -242,6 +261,12 @@ class MainActivity : AppCompatActivity() {
 
         private fun showSuccessDialog() {
         }
+    }
+
+
+    private fun dialEmergencyNumber(number: String) {
+        val dialIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$number"))
+        startActivity(dialIntent)
     }
 
 }
