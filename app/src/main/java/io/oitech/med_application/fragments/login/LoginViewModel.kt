@@ -7,10 +7,7 @@ import io.oitech.med_application.models.MyUser
 
 class LoginViewModel :ViewModel(){
 
-    val isEmailAuthorization  =MutableLiveData<Boolean>(true)
-    fun loginByEmailAndPassword(email: String, password: String,onSuccess:() ->Unit) {
-        MainActivity.signInWithEmail(email, password, onSuccess = onSuccess)
-    }
+
 
     val user =MutableLiveData<MyUser>()
 }

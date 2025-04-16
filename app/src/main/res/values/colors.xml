@@ -16,4 +16,6 @@
     <color name="doctor_discription_color">#717784</color>
     <color name="line_color">#E8F3F1</color>
     <color name="time_slot_border_color">#DEECE9</color>
+    <color name="ambulance_line_color">#E8F3F1</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>
