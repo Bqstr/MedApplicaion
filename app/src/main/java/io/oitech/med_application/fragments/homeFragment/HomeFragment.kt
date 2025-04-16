@@ -1,5 +1,6 @@
 package io.oitech.med_application.fragments.homeFragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.R
+import io.oitech.med_application.chatbot.ChatActivity
 import io.oitech.med_application.fragments.MainViewModel
 import io.oitech.med_application.utils.Resource
 
@@ -45,6 +47,8 @@ class HomeFragment : Fragment(),OnItemClickListener {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+
+
     private val viewModel: MainViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,6 +86,11 @@ class HomeFragment : Fragment(),OnItemClickListener {
         }
         view.findViewById<LinearLayout>(R.id.hospital_home).setOnClickListener{
             navController.navigate(R.id.action_homeFragment_to_mapFragment)
+        }
+        view.findViewById<LinearLayout>(R.id.pharmacy_button_home).setOnClickListener{
+            val intent = Intent(requireContext(), ChatActivity::class.java)
+            startActivity(intent)
+
         }
 
         viewModel.getAllDoctors()
