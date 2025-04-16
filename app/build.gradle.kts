@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.backend.wasm.ir2wasm.bind
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -16,6 +17,12 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        val properties = Properties()
+        properties.load(rootProject.file("local.properties").inputStream())
+        val openAiKey = properties.getProperty("OPENAI_API_KEY") ?: ""
+
+        buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +46,7 @@ android {
     buildFeatures{
         compose =true
         viewBinding =true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.0"
@@ -96,7 +104,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
 
-
+    implementation("com.google.code.gson:gson:2.8.8")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
 
     // Firebase Authentication
 }
