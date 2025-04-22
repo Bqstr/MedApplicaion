@@ -61,6 +61,9 @@
         <action
             android:id="@+id/action_homeFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_messagesFragment"
+            app:destination="@id/messagesFragment" />
     </fragment>
     <fragment
         android:id="@+id/numberVerificationFragment"
@@ -90,6 +93,9 @@
         <action
             android:id="@+id/action_doctorDetailFragment_to_appointmentFragment"
             app:destination="@id/appointmentFragment" />
+        <action
+            android:id="@+id/action_doctorDetailFragment_to_chatFragment2"
+            app:destination="@id/chatFragment" />
     </fragment>
     <fragment
         android:id="@+id/appointmentFragment"
@@ -111,4 +117,23 @@
         android:name="io.oitech.med_application.fragments.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="io.oitech.med_application.fragments.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" >
+
+        <argument
+            android:name="DOCTOR_ID_PARAM"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/messagesFragment"
+        android:name="io.oitech.med_application.fragments.MessagesFragment"
+        android:label="fragment_messages"
+        tools:layout="@layout/fragment_messages" >
+        <action
+            android:id="@+id/action_messagesFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
 </navigation>

@@ -54,7 +54,8 @@ import io.oitech.med_application.utils.ComposableUtils.Space
 fun DoctorDetailsScreen(
     doctor: HomeDoctorUiItem,
     navigateToAppointment: (HomeDoctorUiItem) -> Unit,
-    navigateBack: () -> Boolean
+    navigateBack: () -> Boolean,
+    navigateToChat:(Int) ->Unit
 ) {
     val appointmentInfo = remember {
         mutableStateOf<HomeDoctorUiItem?>(null)
@@ -182,6 +183,9 @@ fun DoctorDetailsScreen(
             Box(
                 Modifier
                     .size(50.dp)
+                    .clickable {
+                        navigateToChat(doctor.id)
+                    }
                     .background(
                         colorResource(id = R.color.strange_color),
                         RoundedCornerShape(16.dp)

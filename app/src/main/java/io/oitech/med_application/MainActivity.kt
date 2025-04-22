@@ -73,20 +73,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val doctor = HomeDoctorUiItem(
-            id = 1,
-            name = "Dr. John Doe",
-            image = "https://example.com/image.jpg",
-            speciality = "Cardiologist",
-            distance = 5.0,
-            rating = "4.8",
-            description = "Experienced heart specialist",
-            listOfTimes = listOf(
-                DateOfTheWeek("Monday", 11,"date name", listOf(
-                TimeSlot("10:00-11:00", available = true)
-            ))
-            )
-        )
+
 
 
 
@@ -133,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 when (destination.id) {
-                    R.id.homeFragment,R.id.profileFragment,R.id.scheduleFragment -> {
+                    R.id.homeFragment,R.id.profileFragment,R.id.scheduleFragment,R.id.messagesFragment -> {
                         bottomNavigationView.visibility = View.VISIBLE
                     }
 
@@ -158,6 +145,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     R.id.calendar_bottom_bar ->{
                         findNavController(R.id.nav_host_fragment).navigate(R.id.scheduleFragment)
+                        true
+                    }
+                    R.id.chatListFragments ->{
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.messagesFragment)
                         true
                     }
 

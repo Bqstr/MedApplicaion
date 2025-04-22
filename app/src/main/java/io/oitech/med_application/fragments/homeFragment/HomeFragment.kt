@@ -54,7 +54,6 @@ class HomeFragment : Fragment(),OnItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -62,23 +61,18 @@ class HomeFragment : Fragment(),OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         val navController =findNavController()
-        Log.d("HomeFragment", "onViewCreated called") // Debugging log
 
         val recyclerView: RecyclerView = view.findViewById(R.id.home_doctors_recuclerView)
 
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
 
-//        val doctorsList = listOf(
-//            HomeDoctorUiItem(name ="Dr. Smith", image ="https://example.com/image1.jpg", speciality ="Cardiologist", distance =6000.0, rating ="5.0",id =0),
-//            HomeDoctorUiItem(name ="Dr. Jane", image ="https://example.com/image2.jpg",speciality = "Dentist", distance =5000.0,rating = "4.5",id =1)
-//        )
         val adapter =HomeDoctorsAdapters(emptyList(),this,requireContext())
 
         recyclerView.adapter = adapter
 
 
-        recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50)) // 50px padding at start & end
+        recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50))
 
 
         view.findViewById<TextView>(R.id.see_all_text).setOnClickListener{
@@ -97,7 +91,7 @@ class HomeFragment : Fragment(),OnItemClickListener {
         viewModel.doctors.observe(viewLifecycleOwner) { newList ->
             if(newList is Resource.Success ) {
                 if(newList.data !=null) {
-                    adapter.updateList(newList.data)  // This automatically updates the RecyclerView
+                    adapter.updateList(newList.data)
                 }
             }
         }

@@ -1,6 +1,4 @@
-import org.jetbrains.kotlin.backend.wasm.ir2wasm.bind
 import java.util.Properties
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
     //id("androidx.navigation.safeargs.kotlin")
@@ -14,6 +12,8 @@ plugins {
 
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("com.google.gms.google-services")
+
+    id("androidx.navigation.safeargs.kotlin")
 
 
 }
@@ -55,19 +55,19 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures{
-        compose =true
-        viewBinding =true
+    buildFeatures {
+        compose = true
+        viewBinding = true
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = "1.5.2"
     }
 }
 
 dependencies {
 
-   implementation("androidx.compose.compiler:compiler:1.4.0")
+    implementation("androidx.compose.compiler:compiler:1.5.2")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -98,8 +98,6 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
 
-
-
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
 
@@ -113,8 +111,6 @@ dependencies {
     // https://firebase.google.com/docs/android/setup#available-libraries
 
 
-
-
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation("com.google.android.gms:play-services-auth:21.1.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
@@ -126,8 +122,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
-
-
 
 
     // Hilt ViewModel extension
@@ -146,10 +140,9 @@ dependencies {
     implementation("com.tbuonomo:dotsindicator:5.1.0")
     implementation("androidx.compose.foundation:foundation:1.7.8")
 
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
-
 
 
 //Google Services & Maps
@@ -162,5 +155,6 @@ dependencies {
 
 
 
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2") // or latest version
 
 }

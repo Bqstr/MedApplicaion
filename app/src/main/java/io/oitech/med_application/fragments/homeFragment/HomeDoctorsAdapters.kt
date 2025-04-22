@@ -16,6 +16,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import io.oitech.med_application.R
@@ -31,9 +32,7 @@ class HomeDoctorsAdapters(
     private var items: List<HomeDoctorUiItem>,
     public val listener: OnItemClickListener,
     private val context: android.content.Context
-) :
-    RecyclerView.Adapter<HomeDoctorsAdapters.ItemViewHolder>() {
-
+) : RecyclerView.Adapter<HomeDoctorsAdapters.ItemViewHolder>() {
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.home_doctor_item_name)
         val speciality: TextView = view.findViewById(R.id.home_doctor_item_speciality)
@@ -52,6 +51,7 @@ class HomeDoctorsAdapters(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.home_doctors_recucler_view_item, parent, false)
+
         return ItemViewHolder(view)
     }
 
@@ -166,7 +166,8 @@ data class HomeDoctorUiItem(
     val distance: Double,
     val rating: String,
     val description: String = "skibi di doooooop",
-    val listOfTimes: List<DateOfTheWeek> = emptyList()
+    val listOfTimes: List<DateOfTheWeek> = emptyList(),
+    val number :String =""
 ) : Parcelable {
 }
 

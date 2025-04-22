@@ -14,7 +14,7 @@
     <item
         tools:layout="@layout/fragment_number_verification"
 
-        android:id="@+id/numberVerificationFragment"
+        android:id="@+id/chatListFragments"
         android:icon="@drawable/message"
         android:title="Favorite"
         app:showAsAction="always" />

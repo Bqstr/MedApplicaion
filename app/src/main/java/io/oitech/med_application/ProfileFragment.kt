@@ -57,8 +57,18 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        viewModel.getMyProfile()
+//        viewModel.profileName.observe(viewLifecycleOwner){
+//            val textView = view.findViewById<TextView>(R.id.profile_name)
+//            textView.text = it
+//        }
+
+
         val textView = view.findViewById<TextView>(R.id.profile_name)
-        textView.text = Firebase.auth.currentUser?.email
+            textView.text = "Bekzhan"
+
+
+
 
 
         view.findViewById<LinearLayout>(R.id.profile_logout_button).setOnClickListener{

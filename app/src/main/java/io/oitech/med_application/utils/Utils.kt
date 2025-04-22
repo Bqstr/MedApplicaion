@@ -37,6 +37,37 @@ object Utils {
         }
     }
 
+    fun formatMessageTimeForLastMessage(timestamp: String): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+        val messageTime = LocalDateTime.parse(timestamp, formatter)
+        val now = LocalDateTime.now()
+
+        val messageDate = messageTime.toLocalDate()
+        val today = now.toLocalDate()
+
+        return when {
+            messageDate.isEqual(today) -> {
+                // Today
+                messageTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+            }
+
+            messageDate.isEqual(today.minusDays(1)) -> {
+                // Yesterday
+                "Yesterday"
+            }
+
+            messageDate.isAfter(today.minusDays(7)) -> {
+                // Within the last week
+                messageTime.dayOfWeek.toString().lowercase().replaceFirstChar { it.uppercase() }
+            }
+
+            else -> {
+                // Older
+                messageTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            }
+        }
+    }
+
 
 
 

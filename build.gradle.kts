@@ -22,6 +22,7 @@ buildscript {
     dependencies {
         // Google Services plugin
         classpath ("com.google.gms:google-services:4.3.10")
+        classpath ("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7")
         // Firebase Crashlytics plugin
     }
     tasks.withType<JavaCompile> {

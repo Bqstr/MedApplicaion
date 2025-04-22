@@ -15,4 +15,6 @@ object Color {
     val ColorScheduleWeakBlue =Color(232, 243, 241)
     val ColorOfSpecialityInSchedule =Color(173, 173, 173)
     val ColorOfDetailsOfSchedule =Color(85,85,85)
+
+    val ColorOfMessageInChat =Color(85, 85, 85)
 }

@@ -84,7 +84,7 @@ object ComposableUtils {
                 when(state){
                     is RequestState.Failure ->{
                         Log.d("ffrfrfrfrfrfrfrfrfff","fial")
-                        Image(painter = painterResource(id = R.drawable.second_onboard_image) , contentDescription =null,modifier =modifier )
+                        //Image(painter = painterResource(id = R.drawable.second_onboard_image) , contentDescription =null,modifier =modifier )
                     }
                     is RequestState.Loading ->{
                         Log.d("ffrfrfrfrfrfrfrfrfff","kadddddddd")
