@@ -167,7 +167,10 @@ data class HomeDoctorUiItem(
     val rating: String,
     val description: String = "skibi di doooooop",
     val listOfTimes: List<DateOfTheWeek> = emptyList(),
-    val number :String =""
+    val number :String ="",
+
+    val hospitalId:Int,
+    val price:Int
 ) : Parcelable {
 }
 
@@ -180,8 +183,10 @@ data class HomeDoctorUiItemWithout(
     val distance: Double = 0.0,
     val rating: Double = 5.0,
     val description: String = "skibi di doooooop",
+    val hospitalId:Int,
+    val price:Int
 ) {
-    constructor() : this(0, "", "", "", 0.0, 1.0, "skibi di doooooop")
+    constructor() : this(0, "", "", "", 0.0, 1.0, "skibi di doooooop",0,0)
 
 }
 

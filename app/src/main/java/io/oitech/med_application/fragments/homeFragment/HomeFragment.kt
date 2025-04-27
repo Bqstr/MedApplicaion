@@ -78,13 +78,16 @@ class HomeFragment : Fragment(),OnItemClickListener {
         view.findViewById<TextView>(R.id.see_all_text).setOnClickListener{
             navController.navigate(R.id.action_homeFragment_to_doctorsListFragment2)
         }
-        view.findViewById<LinearLayout>(R.id.hospital_home).setOnClickListener{
+        view.findViewById<LinearLayout>(R.id.doctor_home_button).setOnClickListener{
             navController.navigate(R.id.action_homeFragment_to_mapFragment)
         }
         view.findViewById<LinearLayout>(R.id.pharmacy_button_home).setOnClickListener{
             val intent = Intent(requireContext(), ChatActivity::class.java)
             startActivity(intent)
 
+        }
+        view.findViewById<LinearLayout>(R.id.hospital_home).setOnClickListener{
+            navController.navigate(R.id.action_homeFragment_to_hospitalsFragment)
         }
 
         viewModel.getAllDoctors()

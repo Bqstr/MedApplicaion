@@ -8,7 +8,6 @@ import androidx.lifecycle.asLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -37,6 +36,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
 
+    val hospitals =MutableStateFlow<Resource<List<HospitalModel>>>(Resource.Unspecified())
     val messages = MutableStateFlow<Map<Int, List<ChatMessageModel>>>(emptyMap())
 
     private val _messageRooms = MutableStateFlow<List<ChatRoomModel>>(emptyList())
@@ -97,12 +97,10 @@ class MainViewModel @Inject constructor(
                         }
 
 
-                        Log.d("sadlkjfldasdfjaskldfj", timeSlotList.toString())
 
                         val myMap =
                             timeSlotList.groupBy { it.time.substring(0, 10) }//TODO:check this
 
-                        Log.d("sdafasdfasdfdddddasdfasdf", myMap.toString())
 
 
                         val listOfDates = mutableListOf<DateOfTheWeek>()
@@ -110,7 +108,6 @@ class MainViewModel @Inject constructor(
                         myMap.forEach() { key, value ->
                             val fullTime = (value.firstOrNull()?.time ?: "")
 
-                            Log.d("sdafasdfasdfasdfasdf", fullTime)
                             if (fullTime.isNotBlank()) {
                                 val formatter =
                                     DateTimeFormatter.ofPattern(
@@ -206,7 +203,9 @@ class MainViewModel @Inject constructor(
                                 name = it.name,
                                 speciality = it.speciality,
                                 rating = it.rating.toString(),
-                                listOfTimes = listOfDates
+                                listOfTimes = listOfDates,
+                                hospitalId =it.hospitalId,
+                                price = it.price
                             )
                         })
 
@@ -321,7 +320,9 @@ class MainViewModel @Inject constructor(
                                         name = doctor.name,
                                         speciality = doctor.speciality,
                                         rating = doctor.rating.toString(),
-                                        listOfTimes = listOfDates
+                                        listOfTimes = listOfDates,
+                                        hospitalId = doctor.hospitalId,
+                                        price = doctor.price
                                     )
                                 )
 
@@ -405,6 +406,22 @@ class MainViewModel @Inject constructor(
 
     }
 
+    fun getHospitals() {
+        val db = FirebaseFirestore.getInstance()
+        val scheduleRef = db.collection("Hospital") // Ensure the collection name is correct
+        scheduleRef
+            .get()
+            .addOnSuccessListener { querySnapshot: QuerySnapshot ->
+                val hospitalList = querySnapshot.documents.mapNotNull {
+                    it.toObject(HospitalModel::class.java)
+                }
+                hospitals.value = Resource.Success(hospitalList)
+
+            }.addOnFailureListener{
+                hospitals.value = Resource.Failure(it.message.toString())
+
+            }
+    }
 
     fun scheduleTime(
         doctor_id: Int,

@@ -2,16 +2,14 @@ package io.oitech.med_application.fragments.doctor_list
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.oitech.med_application.R
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
-import io.oitech.med_application.fragments.homeFragment.HomeDoctorsAdapters
-import io.oitech.med_application.fragments.homeFragment.StartEndPaddingItemDecoration
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,19 +48,38 @@ class DoctorsListFragment : Fragment() {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.top_doctor_recucler_view)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL, false
+        )
 
         val doctorsList = listOf(
-            HomeDoctorUiItem(name ="Dr. Smith", image ="https://example.com/image1.jpg", speciality ="Cardiologist", distance =6000.0, rating ="5.0",id =0),
-            HomeDoctorUiItem(name ="Dr. Jane", image ="https://example.com/image2.jpg",speciality = "Dentist", distance =5000.0,rating = "4.5",id =1)
+            HomeDoctorUiItem(
+                name = "Dr. Smith",
+                image = "https://example.com/image1.jpg",
+                speciality = "Cardiologist",
+                distance = 6000.0,
+                rating = "5.0",
+                id = 0,
+                hospitalId = 0,
+                price = 10000
+            ),
+            HomeDoctorUiItem(
+                name = "Dr. Jane",
+                image = "https://example.com/image2.jpg",
+                speciality = "Dentist",
+                distance = 5000.0,
+                rating = "4.5",
+                id = 1,
+                hospitalId = 0,
+                price = 6000
+            )
         )
 
         recyclerView.adapter = TopDoctorListAdapter(doctorsList)
 
 
         //recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50)) // 50px padding at start & end
-
 
         Log.d("HomeFragment", "RecyclerView item count: ${doctorsList.size}")
     }

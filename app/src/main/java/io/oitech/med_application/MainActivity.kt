@@ -108,7 +108,10 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.onboardingFragment)
             }else {
                 if (auth.currentUser != null) {
-                    navController.navigate(R.id.action_login_fragment_to_homeScreen)
+                    navController.navigate(R.id.action_login_fragment_to_homeScreen,null,
+                        NavOptions.Builder()
+                            .setPopUpTo(R.id.homeFragment, true) // Clears all previous fragments
+                            .build())
                 }
             }
 

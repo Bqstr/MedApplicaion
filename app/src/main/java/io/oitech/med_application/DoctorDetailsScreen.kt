@@ -207,7 +207,6 @@ fun DoctorDetailsScreen(
                     .clickable {
                         val selectedTimeToSend =
                             selectedDate.value?.listOfDates?.get(selectedTImeSliteIndex.value)
-
                         if (selectedTimeToSend != null) {
                             val date =
                                 selectedDate.value?.copy(listOfDates = listOf(selectedTimeToSend))
@@ -221,7 +220,9 @@ fun DoctorDetailsScreen(
                                         rating = doctor.rating,
                                         speciality = doctor.speciality,
                                         image = doctor.image,
-                                        listOfTimes = listOf(date)
+                                        listOfTimes = listOf(date),
+                                        hospitalId = doctor.hospitalId,
+                                        price = doctor.price
 
                                     )
                                 )

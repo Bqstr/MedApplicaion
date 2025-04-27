@@ -59,23 +59,24 @@ object ComposableUtils {
     @Composable
     fun FirebaseImageLoader(imagePath: String,modifier: Modifier,contentScale: ContentScale) {
         val storage = Firebase.storage
-        val storageRef = storage.reference.child("pexels-evelina-zhu-5434019.png")
+        val storageRef = storage.reference.child("${imagePath}")
 
+        //Not Sure that this is the right way
+        var imageUrl = remember { mutableStateOf<String?>("https://firebasestorage.googleapis.com/v0/b/med-project-4397f.firebasestorage.app/o/${imagePath}?alt=media") }
 
-        var imageUrl = remember { mutableStateOf<String?>(null) }
 
         // Fetch the image download URL
-        LaunchedEffect(imagePath) {
-            Log.e("slkdjflksjdfkljdsfkl", "doing")
-
-            storageRef.downloadUrl.addOnSuccessListener { uri ->
-                Log.e("slkdjflksjdfkljdsfkl", "success")
-
-                imageUrl.value = uri.toString()
-            }.addOnFailureListener {
-                Log.e("slkdjflksjdfkljdsfkl", "Error fetching image URL: ${it.message}")
-            }
-        }
+//        LaunchedEffect(imagePath) {
+//            Log.e("slkdjflksjdfkljdsfkl", "doing ${imagePath}")
+//
+//            storageRef.downloadUrl.addOnSuccessListener { uri ->
+//                Log.e("slkdjflksjdfkljdsfkl", "success")
+//
+//                imageUrl.value = uri.toString()
+//            }.addOnFailureListener {
+//                Log.e("slkdjflksjdfkljdsfkl", "Error fetching image URL: ${it.message}")
+//            }
+//        }
 
         // Display the image if the URL is available
         if (imageUrl != null) {
@@ -83,19 +84,14 @@ object ComposableUtils {
             GlideSubcomposition(model =imageUrl.value,modifier =modifier ) {
                 when(state){
                     is RequestState.Failure ->{
-                        Log.d("ffrfrfrfrfrfrfrfrfff","fial")
-                        //Image(painter = painterResource(id = R.drawable.second_onboard_image) , contentDescription =null,modifier =modifier )
                     }
                     is RequestState.Loading ->{
-                        Log.d("ffrfrfrfrfrfrfrfrfff","kadddddddd")
                         Box(modifier =modifier){
                             CircularProgressIndicator(Modifier.align(Alignment.Center))
                         }
 
                     }
                     else ->{
-                        Log.d("ffrfrfrfrfrfrfrfrfff","succcccc")
-
                         GlideImage(
                             model =  imageUrl.value,
                             contentDescription = "Firebase Image",
@@ -105,8 +101,6 @@ object ComposableUtils {
                     }
                 }
             }
-            Log.d("slkdjflksjdfkljdsfkl",imageUrl.value.toString())
-
         } else {
             CircularProgressIndicator()
         }

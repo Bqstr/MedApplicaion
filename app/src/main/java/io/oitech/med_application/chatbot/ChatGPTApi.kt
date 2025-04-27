@@ -61,6 +61,7 @@ class ChatGPTApi {
 
         val requestBody = requestBodyJson.toString().toRequestBody(mediaType)
 
+        Log.d("asdfkjhaskldlasdf",apiKey)
         val request = Request.Builder()
             .url("https://api.openai.com/v1/chat/completions")
             .post(requestBody)

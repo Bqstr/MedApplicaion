@@ -34,7 +34,7 @@ android {
         properties.load(rootProject.file("local.properties").inputStream())
         val openAiKey = properties.getProperty("OPENAI_API_KEY") ?: ""
 
-        buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
+        buildConfigField("String", "OPENAI_API_KEY", openAiKey)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

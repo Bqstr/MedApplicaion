@@ -64,6 +64,9 @@
         <action
             android:id="@+id/action_homeFragment_to_messagesFragment"
             app:destination="@id/messagesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_hospitalsFragment"
+            app:destination="@id/hospitalsFragment" />
     </fragment>
     <fragment
         android:id="@+id/numberVerificationFragment"
@@ -136,4 +139,9 @@
             android:id="@+id/action_messagesFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/hospitalsFragment"
+        android:name="io.oitech.med_application.fragments.HospitalsFragment"
+        android:label="fragment_hospitals"
+        tools:layout="@layout/fragment_hospitals" />
 </navigation>
