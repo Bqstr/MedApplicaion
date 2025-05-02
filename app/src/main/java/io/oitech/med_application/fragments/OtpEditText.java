@@ -12,13 +12,16 @@ import androidx.appcompat.widget.AppCompatEditText;
 import io.oitech.med_application.R;
 
 public class OtpEditText extends AppCompatEditText {
-    private float mSpace = 24; //24 dp by default, space between the lines
-    private float mNumChars = 4;
+    private float boxSize = 56; // in dp (for width and height)
+    private Paint mBorderPaint  ;
+    private float mSpace = 10; //24 dp by default, space between the lines
+    private float mNumChars = 6;
     private float mLineSpacing = 8; //8dp by default, height of the text from our lines
-    private int mMaxLength = 4;
+    private int mMaxLength = 6;
     private float mLineStroke = 2;
     private Paint mLinesPaint;
     private OnClickListener mClickListener;
+
 
     public OtpEditText(Context context) {
         super(context);
@@ -37,18 +40,26 @@ public class OtpEditText extends AppCompatEditText {
     private void init(Context context, AttributeSet attrs) {
         float multi = context.getResources().getDisplayMetrics().density;
         mLineStroke = multi * mLineStroke;
+
         mLinesPaint = new Paint(getPaint());
         mLinesPaint.setStrokeWidth(mLineStroke);
-        mLinesPaint.setColor(getResources().getColor(R.color.black));
+        mLinesPaint.setColor(getResources().getColor(R.color.black)); // (maybe will be removed)
+
+        mBorderPaint = new Paint();
+        mBorderPaint.setStrokeWidth(1 * multi); // 1dp border
+        mBorderPaint.setColor(getResources().getColor(R.color.blue)); // your blue color
+        mBorderPaint.setStyle(Paint.Style.STROKE);
+        mBorderPaint.setAntiAlias(true);
+
         setBackgroundResource(0);
-        mSpace = multi * mSpace; //convert to pixels for our density
-        mLineSpacing = multi * mLineSpacing; //convert to pixels for our density
+        mSpace = multi * mSpace;
+        mLineSpacing = multi * mLineSpacing;
         mNumChars = mMaxLength;
 
+        boxSize = boxSize * context.getResources().getDisplayMetrics().density;
         super.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // When tapped, move cursor to end of text.
                 setSelection(getText().length());
                 if (mClickListener != null) {
                     mClickListener.onClick(v);
@@ -69,34 +80,58 @@ public class OtpEditText extends AppCompatEditText {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int availableWidth = getWidth() - getPaddingRight() - getPaddingLeft();
-        float mCharSize;
-        if (mSpace < 0) {
-            mCharSize = (availableWidth / (mNumChars * 2 - 1));
-        } else {
-            mCharSize = (availableWidth - (mSpace * (mNumChars - 1))) / mNumChars;
-        }
-
-        int startX = getPaddingLeft();
+        float startX = getPaddingLeft();
         int bottom = getHeight() - getPaddingBottom();
+        int top = getPaddingTop();
 
-        //Text Width
         Editable text = getText();
         int textLength = text.length();
         float[] textWidths = new float[textLength];
         getPaint().getTextWidths(getText(), 0, textLength, textWidths);
 
+        float cornerRadius = 16 * getResources().getDisplayMetrics().density; // 20dp to px
+
         for (int i = 0; i < mNumChars; i++) {
-            canvas.drawLine(startX, bottom, startX + mCharSize, bottom, mLinesPaint);
-            if (getText().length() > i) {
-                float middle = startX + mCharSize / 2;
-                canvas.drawText(text, i, i + 1, middle - textWidths[0] / 2, bottom - mLineSpacing, getPaint());
+            float left = startX;
+            float right = startX + boxSize;
+            float rectBottom = bottom;
+            float rectTop = bottom - boxSize; // height same as width = boxSize
+
+            // draw rounded box
+            canvas.drawRoundRect(left, rectTop, right, rectBottom, cornerRadius, cornerRadius, mBorderPaint);
+
+            // draw character inside box
+            if (text.length() > i) {
+                float middleX = left + boxSize / 2;
+                float middleY = (rectTop + rectBottom) / 2 + getPaint().getTextSize() / 3;
+                canvas.drawText(text, i, i + 1, middleX - textWidths[i] / 2, middleY, getPaint());
             }
+
+            // Move to next box
             if (mSpace < 0) {
-                startX += mCharSize * 2;
+                startX += boxSize * 2;
             } else {
-                startX += mCharSize + mSpace;
+                startX += boxSize + mSpace;
             }
         }
     }
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int desiredWidth;
+
+        if (mSpace < 0) {
+            // If no space, double box size
+            desiredWidth = (int)((boxSize * 2) * mNumChars);
+        } else {
+            desiredWidth = (int)(boxSize * mNumChars + mSpace * (mNumChars - 1));
+        }
+
+        int width = resolveSize(desiredWidth + getPaddingLeft() + getPaddingRight(), widthMeasureSpec);
+        int height = resolveSize((int) (boxSize + getPaddingTop() + getPaddingBottom()), heightMeasureSpec);
+
+        setMeasuredDimension(width, height);
+    }
+
 }

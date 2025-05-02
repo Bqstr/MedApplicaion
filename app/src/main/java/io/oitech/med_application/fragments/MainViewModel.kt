@@ -1,17 +1,24 @@
 package io.oitech.med_application.fragments
 
+import android.app.Activity
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.oitech.med_application.MainActivity
 import io.oitech.med_application.fragments.homeFragment.DateOfTheWeek
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItemWithout
@@ -27,6 +34,7 @@ import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -87,7 +95,6 @@ class MainViewModel @Inject constructor(
                 val doctorsList = querySnapshot.documents.mapNotNull {
                     it.toObject(HomeDoctorUiItemWithout::class.java)
                 }
-                Log.d("fdsfdasdfsfafff", doctorsList.toString())
                 doctors.value = Resource.Loading()
                 timeSlot.get()
                     .addOnSuccessListener { timeSlotSnapshot: QuerySnapshot ->
@@ -497,7 +504,173 @@ class MainViewModel @Inject constructor(
             }
     }
 
+    private  var verificationId =MutableLiveData<String?>(null)
 
+    private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+            // Auto verification or instant verification
+            Log.e("PhoneAuth", "Verification success")
+
+            //signInWithPhoneAuthCredential(credential,Firebase.auth)
+        }
+
+        override fun onVerificationFailed(e: FirebaseException) {
+            // Handle error
+            Log.e("PhoneAuth", "Verification failed", e)
+        }
+
+        override fun onCodeSent(verificationIds: String, token: PhoneAuthProvider.ForceResendingToken) {
+            // Save verification ID to use later
+            verificationId.value = verificationIds
+            Log.d("codeeeeeeeee", "Code sent: ${verificationId.value}")
+        }
+    }
+
+    fun sendVerificationCode(phoneNumber: String,activity: Activity) {
+        Log.d("PhoneAuth",phoneNumber)
+        val auth =Firebase.auth
+        val options = PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber(phoneNumber)       // Phone number to verify
+            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+            .setActivity(activity )                 // Activity (for callback binding)
+            .setCallbacks(callbacks)           // OnVerificationStateChangedCallbacks
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+
+    fun sendVerificationForSignInWithPhone(phoneNumber: String,password: String,activity: Activity,onSuccess: () -> Unit){
+        val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
+            .setPhoneNumber(phoneNumber) // Phone number in E.164 format
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(activity) // Your current activity
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    // Auto verification (instant or auto-retrieval)
+                    FirebaseAuth.getInstance().signInWithCredential(credential)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val user = task.result?.user
+                                Log.d("Auth", "Signed in with phone: ${user?.uid}")
+                                //signInWithPhone(email = phoneNumber,password =password, onSuccess = onSuccess, auth = Firebase.auth)
+                            }
+                        }
+                }
+
+                override fun onVerificationFailed(e: FirebaseException) {
+                    Log.e("Auth", "Phone verification failed", e)
+                }
+
+                override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                    // Save verificationId and prompt user to enter code manually
+                }
+            })
+            .build()
+
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+    fun verifyCode(code: String,onSuccess: () -> Unit,phoneNumber: String,name:String,password: String) {
+        Log.d("codeeeeeeeee",verificationId.value?:"")
+        if(verificationId.value!=null) {
+            val credential = PhoneAuthProvider.getCredential(verificationId.value!!, code)
+            registerWithPhone(name =name , password = password, phone = phoneNumber, auth = Firebase.auth, onSuccess =onSuccess,credential =credential)
+            verificationId.value =null
+            //signInWithPhoneAuthCredential(credential, Firebase.auth,onSuccess )
+        }
+    }
+
+
+    fun registerWithPhone(name:String,phone:String,password:String,auth:FirebaseAuth,onSuccess: () -> Unit,credential :PhoneAuthCredential){
+        val db = Firebase.firestore
+        Log.d("codeeeeeeeee","register with phone")
+
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("codeeeeeeeee","sign in with creditionals")
+
+                    // Success, navigate to the next screen
+                    val user = task.result?.user
+
+
+                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                    // Fetch user details from Firestore
+
+                    val newUser = hashMapOf(
+                        "email" to phone,
+                        "name" to name,
+                        "uid" to userId,
+                    )
+
+
+                    db.collection("users").add(
+                        newUser
+                    )
+                        .addOnSuccessListener { document ->
+                            Log.d("codeeeeeeeee","adding user")
+
+                                Log.d("codeeeeeeeee","document exist")
+
+                                //val userData = document.data ?: emptyMap()
+
+                                uidManager.setUId(userId)
+                                onSuccess()
+                        }
+                        .addOnFailureListener { e ->
+
+                        }
+
+
+
+
+                } else {
+                    // Error
+                    Log.e("PhoneAuth", "Sign in failed", task.exception)
+                }
+            }
+    }
+
+//    fun signInWithPhone(
+//        email: String,
+//        password: String,
+//        onSuccess: () -> Unit,
+//        auth: FirebaseAuth
+//    ){
+//        auth.si(email, password)//need to verify before login , just like in register
+//            .addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    // Sign-in successful
+//
+//                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+//
+//                    // Fetch user details from Firestore
+//                    db.collection("users").document(userId).get()
+//                        .addOnSuccessListener { document ->
+//                            if (document.exists()) {
+//                                val userData = document.data ?: emptyMap()
+//
+//                                uidManager.setUId(userId)
+//                                onSuccess()
+//                            } else {
+//                                //TODO: show error
+//                            }
+//                        }
+//                        .addOnFailureListener { e ->
+//                            //TODO: show error
+//
+//                        }
+//
+//
+//                    val user = auth.currentUser
+//                } else {
+//                    Log.e("Auth", "Sign-up failed: ${task.exception?.message}")
+//
+//
+//                }
+//            }
+//    }
     fun signInWithEmail(
         email: String,
         password: String,
@@ -523,9 +696,12 @@ class MainViewModel @Inject constructor(
                                 uidManager.setUId(userId)
                                 onSuccess()
                             } else {
+                                //TODO: show error
                             }
                         }
                         .addOnFailureListener { e ->
+                            //TODO: show error
+
                         }
 
 
@@ -537,16 +713,18 @@ class MainViewModel @Inject constructor(
                 }
             }
     }
+    val isEmailAuthorizationForRegister = MutableLiveData<Boolean>(true)
 
 
-    val isEmailAuthorization = MutableLiveData<Boolean>(true)
+
+    val isEmailAuthorizationForLogin = MutableLiveData<Boolean>(true)
     fun loginByEmailAndPassword(email: String, password: String, onSuccess: () -> Unit) {
         signInWithEmail(email, password, onSuccess = onSuccess, Firebase.auth)
     }
 
 
     fun logoutUser() {
-        FirebaseAuth.getInstance().signOut()
+        Firebase.auth.signOut()
         uidManager.setUId("")
     }
 
@@ -751,6 +929,8 @@ class MainViewModel @Inject constructor(
                 })
             }
     }
+
+
 
 
 }

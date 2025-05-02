@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -55,7 +56,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var param2: String? = null
 
 
-    val viewModel: MainViewModel by viewModels()
+    val viewModel: MainViewModel by activityViewModels()
 
 
     private lateinit var mGoogleMap: GoogleMap

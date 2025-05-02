@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +24,7 @@ private const val DOCTOR_ID_PARAM = "DOCTOR_ID_PARAM"
  */
 @AndroidEntryPoint
  class ChatFragment : Fragment() {
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
 
     // TODO: Rename and change types of parameters
 

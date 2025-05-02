@@ -13,9 +13,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -32,7 +31,7 @@ import io.oitech.med_application.fragments.MainViewModel
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private val viewModel :MainViewModel by viewModels()
+    private val viewModel :MainViewModel by activityViewModels()
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var mainActivity: MainActivity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,24 +63,24 @@ class LoginFragment : Fragment() {
             when {
                 Patterns.EMAIL_ADDRESS.matcher(it).matches() -> {
                     Log.d("asdfasfdasfdafsd","email")
-                    viewModel.isEmailAuthorization.postValue(true)
+                    viewModel.isEmailAuthorizationForLogin.postValue(true)
                 }
                 Patterns.PHONE.matcher(it).matches() ->{
                     Log.d("asdfasfdasfdafsd","phone")
 
-                    viewModel.isEmailAuthorization.postValue(false)
+                    viewModel.isEmailAuthorizationForLogin.postValue(false)
 
                 }
                 else -> {
                     Log.d("asdfasfdasfdafsd","else")
-                    viewModel.isEmailAuthorization.postValue(true)
+                    viewModel.isEmailAuthorizationForLogin.postValue(true)
 
                 }
             }
         }
 
 
-        viewModel.isEmailAuthorization.observe(viewLifecycleOwner){
+        viewModel.isEmailAuthorizationForLogin.observe(viewLifecycleOwner){
 
             if(it) {
                 Log.d("asdfasfdasfdafsd","set phone")

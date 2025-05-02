@@ -49,7 +49,7 @@ class HomeFragment : Fragment(),OnItemClickListener {
     }
 
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

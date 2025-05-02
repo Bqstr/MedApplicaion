@@ -1,14 +1,25 @@
 package io.oitech.med_application.fragments.login
 
-import io.oitech.med_application.R
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-
-
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
+import io.oitech.med_application.MainActivity
+import io.oitech.med_application.R
+import io.oitech.med_application.fragments.MainViewModel
+import io.oitech.med_application.fragments.OtpEditText
+import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -21,6 +32,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [NumberVerificationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class NumberVerificationFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -33,48 +45,46 @@ class NumberVerificationFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+    val viewModel :MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
+
+
         // Inflate the layout for this fragment
         return inflater.inflate(io.oitech.med_application.R.layout.fragment_number_verification, container, false)
     }
 
-    lateinit var editText1:EditText
-    lateinit var editText2:EditText
-    lateinit var editText3:EditText
-    lateinit var editText4:EditText
-    lateinit var editText5:EditText
-    lateinit var editText6:EditText
-
-
-
-    //val editTexts =mutale
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val args =arguments?.getParcelable<PhoneVerificationData>("user_number")
+        Log.d("dsfaasdfdfsasfdsdf",args.toString())
+        view.findViewById<TextView>(R.id.verification_description).text ="${requireContext().getString(R.string.verification_description_without_number)} ${args?:""}"
 
-//
-//        editText1 = view.findViewById(R.id.otpEdit1) as EditText
-//        editText2 = view.findViewById(R.id.otpEdit2) as EditText
-//        editText3 = view.findViewById(R.id.otpEdit3) as EditText
-//        editText4 = view.findViewById(R.id.otpEdit4) as EditText
-//        editTexts = arrayOf<EditText>(editText1, editText2, editText3, editText4)
-//
-//        editText1.addTextChangedListener(PinTextWatcher(0))
-//        editText2.addTextChangedListener(PinTextWatcher(1))
-//        editText3.addTextChangedListener(PinTextWatcher(2))
-//        editText4.addTextChangedListener(PinTextWatcher(3))
-//
-//        editText1.setOnKeyListener(PinOnKeyListener(0))
-//        editText2.setOnKeyListener(PinOnKeyListener(1))
-//        editText3.setOnKeyListener(PinOnKeyListener(2))
-//        editText4.setOnKeyListener(PinOnKeyListener(3))
+        val otpEditText: OtpEditText =
+            view.findViewById(io.oitech.med_application.R.id.otp_verification_text) // or binding if using ViewBinding
+        val enteredOtp = otpEditText.text.toString()
+
+        otpEditText.addTextChangedListener(){text ->
+            if(text.toString().length==6){
+                viewModel.verifyCode(code =  text.toString(), name = args?.name?:"", password = args?.password?:"", phoneNumber = args?.phone?:"", onSuccess = {
+                    if (context != null) {
+                        MainActivity.showSuccessAlert(requireContext())
+                    }
+                    MainActivity.showSuccessAlert(requireContext())
+                    findNavController().navigate(R.id.action_numberVerificationFragment_to_homeFragment)
+                })
+            }
+
+        }
+
+
     }
+
 
     companion object {
         /**
@@ -96,3 +106,5 @@ class NumberVerificationFragment : Fragment() {
             }
     }
 }
+@Parcelize
+data class PhoneVerificationData(val phone:String,val password:String,val name:String):Parcelable

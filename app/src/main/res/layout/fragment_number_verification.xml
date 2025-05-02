@@ -1,72 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".fragments.login.NumberVerificationFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.appcompat.widget.Toolbar
-        app:title="Login"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:logo="@drawable/arrow">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:logo="@drawable/arrow"
+        app:title="Login">
 
 
     </androidx.appcompat.widget.Toolbar>
-
+<Space
+    android:layout_width="wrap_content"
+    android:layout_height="24dp"/>
     <TextView
-        android:layout_marginStart="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:text="Enter Verification Code"
         android:textColor="@color/black"
-        android:textSize="24sp"
-        />
+        android:textSize="24sp" />
+
     <TextView
 
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="24dp"
+        android:id="@+id/verification_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter code that we have sent to your number 08528188*** "
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/verification_description_without_number"
         android:textColor="@color/different_gray"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"/>
 
-    <LinearLayout
+    <FrameLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Space
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
     <io.oitech.med_application.fragments.OtpEditText
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"/>
-        <Space
-            android:layout_weight="1"
+        android:id="@+id/otp_verification_text"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"/>
+
+
+
+    </FrameLayout>
+
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"/>
+
+    <LinearLayout
+        android:layout_marginHorizontal="24dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:backgroundTint="@color/blue"
+        android:orientation="vertical"
+        android:background="@drawable/login_button_shape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:textSize="16dp"
+            android:textColor="@color/white"
+
+            android:layout_marginVertical="16dp"
+            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <io.oitech.med_application.fragments.OtpEditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <Space
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="Verify"
+            />
+
 
     </LinearLayout>
 
 
 
+    </LinearLayout>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"/>
+
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Didn’t receive the code? "/>
+
+        <TextView
+            android:textSize="15dp"
+            android:textColor="@color/blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Resend"/>
+
+    </LinearLayout>
 
 </LinearLayout>
