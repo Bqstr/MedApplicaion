@@ -1,4 +1,4 @@
-package io.oitech.med_application.fragments
+package io.oitech.med_application.fragments.chatList
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,8 +32,11 @@ import io.oitech.med_application.Color.ColorOfMessageInChat
 import io.oitech.med_application.Color.ColorOfSpecialityInSchedule
 import io.oitech.med_application.Color.ColorScheduleWeakBlue
 import io.oitech.med_application.R
+import io.oitech.med_application.fragments.MainViewModel
+import io.oitech.med_application.fragments.chat.ChatRoomModel
 import io.oitech.med_application.utils.ComposableUtils
 import io.oitech.med_application.utils.ComposableUtils.Space
+import io.oitech.med_application.utils.Fonts
 import io.oitech.med_application.utils.Utils
 import io.oitech.med_application.utils.Utils.noRippleClickable
 
@@ -51,7 +54,10 @@ fun MessagesScreen(
         val messageRoomsList = viewModel.messageRooms.collectAsState().value ?: emptyList()
         Space(24.dp)
         Row() {
-            Text("Messages", fontSize = 24.sp, color = Color.Black)
+            Text(
+
+                fontFamily = Fonts.semiBaldFontInter,
+               text = "Messages", fontSize = 24.sp, color = Color.Black)
             Space()
             Icon(
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -92,6 +98,7 @@ fun MessagesScreen(
                     }
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
                     lineHeight = 32.sp,
                     text = "All", color = if (isStatusAll) {
                         Color.White
@@ -120,6 +127,7 @@ fun MessagesScreen(
                     }
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
                     lineHeight = 32.sp,
 
                     text = "Group", color = if (isStatusGroup) {
@@ -149,6 +157,7 @@ fun MessagesScreen(
                     }
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
                     lineHeight = 32.sp,
                     text = "Private", color = if (isStatusPrivate) {
                         Color.White
@@ -196,6 +205,8 @@ fun MessageRoomComposeItem(
             Column(Modifier.align(Alignment.CenterVertically)) {
                 Row() {
                     Text(
+                        fontFamily = Fonts.semiBaldFontInter,
+
                         text = item.doctorName,
                         color = Color.Black,
                         fontSize = 16.sp,
@@ -203,6 +214,8 @@ fun MessageRoomComposeItem(
                     )
                     Space()
                     Text(
+                        fontFamily = Fonts.regularFontInter,
+
                         color = ColorOfMessageInChat,
                         text =   lastMessageTime,
                         modifier = Modifier.align(Alignment.CenterVertically),
@@ -211,6 +224,8 @@ fun MessageRoomComposeItem(
                 }
                 Space(dp = 3.dp)
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     text = item.lastMessage,
                     color = ColorOfSpecialityInSchedule,
                     fontSize = 16.sp,

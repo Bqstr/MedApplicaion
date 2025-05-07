@@ -19,7 +19,6 @@ class TopDoctorListAdapter(private val items: List<HomeDoctorUiItem>) :
         val speciality: TextView = view.findViewById(R.id.top_doctor_list_item_speciality)
         val rating: TextView = view.findViewById(R.id.top_doctor_list_item_rating)
         val distance:TextView=view.findViewById(R.id.top_doctor_list_item_distance)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {

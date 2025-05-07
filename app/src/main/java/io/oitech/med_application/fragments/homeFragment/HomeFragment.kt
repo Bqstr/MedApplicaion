@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -81,13 +80,17 @@ class HomeFragment : Fragment(),OnItemClickListener {
         view.findViewById<LinearLayout>(R.id.doctor_home_button).setOnClickListener{
             navController.navigate(R.id.action_homeFragment_to_mapFragment)
         }
-        view.findViewById<LinearLayout>(R.id.pharmacy_button_home).setOnClickListener{
+        view.findViewById<LinearLayout>(R.id.ai_button_home).setOnClickListener{
             val intent = Intent(requireContext(), ChatActivity::class.java)
             startActivity(intent)
 
         }
         view.findViewById<LinearLayout>(R.id.hospital_home).setOnClickListener{
             navController.navigate(R.id.action_homeFragment_to_hospitalsFragment)
+        }
+
+        view.findViewById<LinearLayout>(R.id.map_home).setOnClickListener{
+            navController.navigate(R.id.action_homeFragment_to_mapFragment)
         }
 
         viewModel.getAllDoctors()

@@ -6,20 +6,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.MainActivity
 import io.oitech.med_application.R
 import io.oitech.med_application.fragments.MainViewModel
-import io.oitech.med_application.fragments.OtpEditText
+import io.oitech.med_application.fragments.numberVerification.OtpEditText
 import kotlinx.parcelize.Parcelize
-import java.io.Serializable
 
 
 // TODO: Rename parameter arguments, choose names that match

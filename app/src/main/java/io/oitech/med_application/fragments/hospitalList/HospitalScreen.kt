@@ -1,10 +1,9 @@
-package io.oitech.med_application.fragments
+package io.oitech.med_application.fragments.hospitalList
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,12 +30,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.oitech.med_application.Color.ColorScheduleWeakBlue
 import io.oitech.med_application.R
+import io.oitech.med_application.fragments.MainViewModel
 import io.oitech.med_application.utils.ComposableUtils
 import io.oitech.med_application.utils.ComposableUtils.Space
+import io.oitech.med_application.utils.Fonts
 import io.oitech.med_application.utils.Resource
 import io.oitech.med_application.utils.Utils.noRippleClickable
 
@@ -44,6 +47,7 @@ fun HospitalScreen(navigateBack: () -> Unit, viewModel: MainViewModel) {
     LaunchedEffect(Unit) {
         viewModel.getHospitals()
     }
+
     val hospitals = viewModel.hospitals.collectAsState().value
 
     Column() {
@@ -65,6 +69,7 @@ fun HospitalScreen(navigateBack: () -> Unit, viewModel: MainViewModel) {
                     }
             )
             Text(
+                fontFamily = Fonts.semiBaldFontInter,
                 text = "Top Hospital",
                 fontSize = 16.sp,
                 modifier = Modifier.align(Alignment.Center),
@@ -75,10 +80,6 @@ fun HospitalScreen(navigateBack: () -> Unit, viewModel: MainViewModel) {
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.CenterEnd)
             )
-
-
-//
-
         }
 
         Space(25.dp)
@@ -131,8 +132,7 @@ fun HospitalListItemCompose(hospital: HospitalModel) {
                     .clip(RoundedCornerShape(8.dp)), contentScale = ContentScale.Crop
             )
 
-        }
-        else {
+        } else {
             Box(
                 Modifier
                     .size(115.dp)
@@ -143,9 +143,15 @@ fun HospitalListItemCompose(hospital: HospitalModel) {
         }
         Column(Modifier.padding(start = 18.dp)) {
             Space(14.dp)
-            Text(text = hospital.name, fontSize = 18.sp, color = Color.Black)
+            Text(
+                fontFamily = Fonts.semiBaldFontInter,
+
+                text = hospital.name, fontSize = 18.sp, color = Color.Black
+            )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
+                fontFamily = Fonts.mediumFontInter,
+
                 text = hospital.organization,
                 color = colorResource(id = R.color.text_gray),
                 fontSize = 12.sp
@@ -165,6 +171,8 @@ fun HospitalListItemCompose(hospital: HospitalModel) {
                         .padding(start = 4.dp, end = 5.dp)
                 )
                 Text(
+                    fontFamily = Fonts.mediumFontInter,
+
                     text = hospital.rating.toString(),
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 2.dp, end = 3.dp, bottom = 2.dp)
@@ -179,6 +187,7 @@ fun HospitalListItemCompose(hospital: HospitalModel) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
+                    fontFamily = Fonts.mediumFontInter,
                     text = hospital.distance.toString(),
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.text_gray)
@@ -196,3 +205,4 @@ data class HospitalModel(
     val organization: String = "",
     val rating: Double = 0.0
 )
+

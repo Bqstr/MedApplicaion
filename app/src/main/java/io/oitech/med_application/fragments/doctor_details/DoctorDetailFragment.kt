@@ -1,4 +1,4 @@
-package io.oitech.med_application.fragments
+package io.oitech.med_application.fragments.doctor_details
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import io.oitech.med_application.DoctorDetailsScreen
 import io.oitech.med_application.R
+import io.oitech.med_application.fragments.chat.ChatFragment
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -25,15 +23,8 @@ private const val ARG_PARAM2 = "param2"
 @AndroidEntryPoint
 class DoctorDetailFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(

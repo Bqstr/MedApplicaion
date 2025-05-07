@@ -22,6 +22,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
+
             app:title="Login"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:id="@+id/toolbar"
@@ -92,6 +93,7 @@
                 android:layout_height="8sp" />
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -104,11 +106,14 @@
                 android:layout_height="20sp" />
 
             <Button
+                android:fontFamily="@font/inter_semibald"
+                android:textAllCaps="false"
                 android:textSize="16sp"
                 android:id="@+id/auth_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+
                 android:backgroundTint="@color/blue"
                 android:gravity="center"
                 android:paddingVertical="16dp"
@@ -119,6 +124,7 @@
                 android:layout_height="24dp" />
 
             <TextView
+                android:fontFamily="@font/inter_regular"
                 android:id="@+id/to_register_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -214,6 +220,8 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:textColor="@color/black"
+                android:fontFamily="@font/inter_semibald"
                 android:textFontWeight="600"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -246,6 +254,8 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:textColor="@color/black"
+                android:fontFamily="@font/inter_semibald"
                 android:textFontWeight="600"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -278,6 +288,8 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:textColor="@color/black"
+                android:fontFamily="@font/inter_semibald"
                 android:textFontWeight="600"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

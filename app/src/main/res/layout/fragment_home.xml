@@ -16,12 +16,13 @@
         android:orientation="horizontal">
 
         <TextView
+            android:fontFamily="@font/inter_semibald"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineHeight="32dp"
             android:text="Find your desire\n healt solution"
             android:textColor="@color/black"
-            android:textFontWeight="600"
             android:textSize="22sp" />
 
         <Space
@@ -69,13 +70,15 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="80dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 app:cardUseCompatPadding="true">
 
                 <ImageView
+
+                    android:backgroundTint="@color/blue"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingHorizontal="16dp"
@@ -85,6 +88,8 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:fontFamily="@font/inter_regular"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Doctor"
@@ -98,7 +103,7 @@
             android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:id="@+id/pharmacy_button_home"
+            android:id="@+id/ai_button_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -106,25 +111,28 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="80dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 app:cardUseCompatPadding="true">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="12dp"
-                    android:src="@drawable/pharmacy"
+                    android:src="@drawable/ai_icon"
                     app:tint="@color/black" />
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:fontFamily="@font/inter_regular"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pharmacy"
+                android:text="AI Assistant"
                 android:textAlignment="center"
                 android:textColor="@color/different_gray"
                 android:textSize="14sp" />
@@ -151,7 +159,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="58dp"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="12dp"
                     android:src="@drawable/hospital"
@@ -159,6 +167,8 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:fontFamily="@font/inter_regular"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Hospital"
@@ -166,6 +176,49 @@
                 android:textColor="@color/different_gray"
                 android:textSize="14sp" />
         </LinearLayout>
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/map_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:src="@drawable/map_icon_1_"
+                    app:tint="@color/black" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:fontFamily="@font/inter_regular"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Map"
+                android:textAlignment="center"
+                android:textColor="@color/different_gray"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
+
 
     </LinearLayout>
 
@@ -194,6 +247,8 @@
                 android:layout_height="18dp" />
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -214,12 +269,14 @@
                 android:background="@drawable/banner_button_back"
                 android:backgroundTint="@color/blue"
 
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="10dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="7dp"
 
                 >
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:lineHeight="14dp"
@@ -273,6 +330,7 @@
             android:layout_weight="1" />
 
         <TextView
+            android:fontFamily="@font/inter_regular"
             android:id="@+id/see_all_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

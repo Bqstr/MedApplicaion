@@ -18,4 +18,6 @@
     <color name="time_slot_border_color">#DEECE9</color>
     <color name="ambulance_line_color">#E8F3F1</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="back_color_of_login_textField">#F9FAFB</color>
+
 </resources>

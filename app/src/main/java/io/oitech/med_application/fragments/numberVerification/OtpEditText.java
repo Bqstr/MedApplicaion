@@ -1,4 +1,4 @@
-package io.oitech.med_application.fragments;
+package io.oitech.med_application.fragments.numberVerification;
 
 import android.content.Context;
 import android.graphics.Canvas;

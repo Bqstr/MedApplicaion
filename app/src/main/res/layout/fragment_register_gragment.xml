@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
-            app:title="Login"
+            app:title="Sign Up"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:id="@+id/toolbar_register"
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="Sign Up"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -71,6 +71,7 @@
                 android:layout_height="16dp" />
 
             <EditText
+
                 android:id="@+id/emailRegister"
 
                 android:layout_width="match_parent"
@@ -92,6 +93,8 @@
                 android:layout_height="16dp" />
 
             <EditText
+
+
                 android:id="@+id/passwordRegister"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -120,12 +123,13 @@
                     android:layout_height="wrap_content"
                     
                     />
-                
+
                 <TextView
+                    android:fontFamily="@font/inter_regular"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="I agree to the medidoc Terms of Service and Privacy Policy"></TextView>
+                    android:text="I agree to the medidoc Terms of Service and Privacy Policy"/>
             </LinearLayout>
 
             
@@ -134,16 +138,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="20sp" />
 
-            <Button
-                android:textSize="16sp"
-                android:id="@+id/sign_up_button"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:background="@drawable/login_button_shape"
                 android:backgroundTint="@color/blue"
+                android:orientation="vertical"
+
+
+                android:id="@+id/sign_up_button"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:paddingVertical="16dp"
-                android:text="Sign Up" />
+                android:paddingVertical="16dp">
+
+                <TextView
+                    android:fontFamily="@font/inter_semibald"
+                    android:textSize="16dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Sign Up" />
+            </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"

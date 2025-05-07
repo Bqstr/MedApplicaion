@@ -1,4 +1,4 @@
-package io.oitech.med_application.fragments
+package io.oitech.med_application.fragments.map
 
 import android.Manifest
 import android.app.AlertDialog
@@ -11,8 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -20,7 +18,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -37,12 +34,11 @@ import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.R
 import io.oitech.med_application.databinding.FragmentMapBinding
+import io.oitech.med_application.fragments.MainViewModel
 import io.oitech.med_application.utils.Resource
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -52,8 +48,6 @@ private const val ARG_PARAM2 = "param2"
 @AndroidEntryPoint
 class MapFragment : Fragment(), OnMapReadyCallback {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
 
     val viewModel: MainViewModel by activityViewModels()
@@ -72,8 +66,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
 
     }
@@ -166,8 +158,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         fun newInstance(param1: String, param2: String) =
             MapFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
                 }
             }
     }

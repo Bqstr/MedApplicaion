@@ -34,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="16dp"/>
         <TextView
+            android:fontFamily="@font/inter_semibald"
             android:id="@+id/top_doctor_list_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,6 +49,7 @@
             android:layout_height="4dp"/>
 
         <TextView
+            android:fontFamily="@font/inter_medium"
             android:id="@+id/top_doctor_list_item_speciality"
 
             android:layout_width="wrap_content"
@@ -72,6 +74,7 @@
                 android:padding="3dp"
                 />
             <TextView
+                android:fontFamily="@font/inter_medium"
                 android:id="@+id/top_doctor_list_item_rating"
 
                 android:paddingEnd="2dp"
@@ -104,14 +107,15 @@
                 />
 
             <TextView
+                android:fontFamily="@font/inter_medium"
                 android:id="@+id/top_doctor_list_item_distance"
-                android:layout_gravity="center_vertical"
-                android:textSize="8dp"
-                android:paddingStart="4dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="4dp"
                 android:text="500km away"
                 android:textColor="@color/text_gray"
+                android:textSize="8dp"
 
                 />
         </LinearLayout>

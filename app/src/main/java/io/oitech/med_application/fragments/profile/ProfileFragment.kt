@@ -1,4 +1,4 @@
-package io.oitech.med_application
+package io.oitech.med_application.fragments.profile
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
@@ -12,19 +12,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import dagger.hilt.android.AndroidEntryPoint
+import io.oitech.med_application.R
 import io.oitech.med_application.fragments.MainViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -34,14 +29,10 @@ private const val ARG_PARAM2 = "param2"
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
     }
     private val viewModel: MainViewModel by activityViewModels()
@@ -129,8 +120,6 @@ class ProfileFragment : Fragment() {
         fun newInstance(param1: String, param2: String) =
             ProfileFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
                 }
             }
     }

@@ -38,6 +38,7 @@ import io.oitech.med_application.R
 import io.oitech.med_application.fragments.MainViewModel
 import io.oitech.med_application.utils.ComposableUtils.FirebaseImageLoader
 import io.oitech.med_application.utils.ComposableUtils.Space
+import io.oitech.med_application.utils.Fonts
 import io.oitech.med_application.utils.Resource
 import io.oitech.med_application.utils.Utils.noRippleClickable
 
@@ -60,7 +61,9 @@ fun ScheduleScreen(viewModel: MainViewModel) {
     ) {
         Space(24.dp)
         Row() {
-            Text("Schedule", fontSize = 24.sp, color = Color.Black)
+            Text(
+                fontFamily = Fonts.semiBaldFontInter,
+                text ="Schedule", fontSize = 24.sp, color = Color.Black)
             Space()
             Icon(
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -101,6 +104,8 @@ fun ScheduleScreen(viewModel: MainViewModel) {
                     }
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     lineHeight = 32.sp,
                     text = "Upcoming", color = if (isStatusUpcoming) {
                         Color.White
@@ -129,6 +134,8 @@ fun ScheduleScreen(viewModel: MainViewModel) {
                     }
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     lineHeight = 32.sp,
 
                     text = "Completed", color = if (isStatusCompleted) {
@@ -158,6 +165,8 @@ fun ScheduleScreen(viewModel: MainViewModel) {
                     }
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     lineHeight = 32.sp,
                     text = "Canceled", color = if (isStatusCanceled) {
                         Color.White
@@ -212,9 +221,13 @@ fun ScheduleListComposeItem(
                 .padding(start = 14.dp, end = 22.dp)
         ) {
             Column {
-                Text(text = scheduleItem.doctorName, fontSize = 18.sp, color = Color.Black)
+                Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+                    text = scheduleItem.doctorName, fontSize = 18.sp, color = Color.Black)
                 Space(4.dp)
                 Text(
+                    fontFamily = Fonts.mediumFontInter,
+
                     text = scheduleItem.doctorSpeciality,
                     fontSize = 12.sp,
                     color = ColorOfSpecialityInSchedule,
@@ -246,6 +259,8 @@ fun ScheduleListComposeItem(
             )
             Space(6.dp)
             Text(
+                fontFamily = Fonts.mediumFontInter,
+
                 text = scheduleItem.time.substring(0, 10).replace("-", "/"),
                 color = ColorOfDetailsOfSchedule,
                 fontSize = 12.sp
@@ -260,6 +275,8 @@ fun ScheduleListComposeItem(
             )
             Space(6.dp)
             Text(
+                fontFamily = Fonts.mediumFontInter,
+
                 text = scheduleItem.time.substring(11, 16),
                 color = ColorOfDetailsOfSchedule,
                 fontSize = 12.sp
@@ -281,6 +298,8 @@ fun ScheduleListComposeItem(
             )
             Space(6.dp)
             Text(
+                fontFamily = Fonts.mediumFontInter,
+
                 text =
                 if (scheduleItem.isConfirmed) {
                     "Confirmed"
@@ -305,6 +324,8 @@ fun ScheduleListComposeItem(
                     .padding(vertical = 6.dp)
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     lineHeight = 32.sp,
                     text = "Cancel",
                     fontSize = 14.sp,
@@ -321,6 +342,8 @@ fun ScheduleListComposeItem(
                     .padding(vertical = 6.dp)
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     lineHeight = 32.sp,
                     text = "Reschedule",
                     fontSize = 14.sp,

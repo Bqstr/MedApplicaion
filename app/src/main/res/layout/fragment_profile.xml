@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileFragment">
+    tools:context=".fragments.profile.ProfileFragment">
 
 
     <!-- TODO: Update blank fragment layout -->
@@ -45,6 +45,7 @@
             android:layout_height="20dp" />
 
         <TextView
+            android:fontFamily="@font/inter_semibald"
             android:id="@+id/profile_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,6 +81,8 @@
                     android:layout_height="6dp" />
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -92,6 +95,8 @@
                     android:layout_height="4dp" />
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -132,6 +137,8 @@
                     android:layout_height="6dp" />
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -144,6 +151,8 @@
                     android:layout_height="4dp" />
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -184,6 +193,8 @@
                     android:layout_height="6dp" />
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -196,6 +207,8 @@
                     android:layout_height="4dp" />
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -256,6 +269,8 @@
 
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -309,6 +324,8 @@
 
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -363,6 +380,8 @@
 
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -417,6 +436,8 @@
 
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -471,6 +492,8 @@
 
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

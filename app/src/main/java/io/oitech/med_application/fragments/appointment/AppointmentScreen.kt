@@ -1,4 +1,4 @@
-package io.oitech.med_application
+package io.oitech.med_application.fragments.appointment
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,9 +40,12 @@ import androidx.compose.ui.window.Dialog
 import io.oitech.med_application.Color.Color_Platinum200
 import io.oitech.med_application.Color.Color_Platinum50
 import io.oitech.med_application.Color.Color_Platinum500
+import io.oitech.med_application.R
 import io.oitech.med_application.fragments.MainViewModel
-import io.oitech.med_application.utils.ComposableUtils.Space
+import io.oitech.med_application.fragments.doctor_details.DoctorItemForDetails
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
+import io.oitech.med_application.utils.ComposableUtils.Space
+import io.oitech.med_application.utils.Fonts
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,8 +55,8 @@ fun AppointmentScreen(
     selectedTimeAndDate: String,
     navigateBacktoHome: () -> Unit,
     navigateToChatWithDoctor: () -> Unit,
-    navigateBack:() ->Unit,
-    viewModel:MainViewModel
+    navigateBack: () -> Unit,
+    viewModel: MainViewModel
 ) {
 
     val reason = remember {
@@ -92,16 +94,21 @@ fun AppointmentScreen(
         )
     }
 
-    if(showReasonModalBottomSheet.value){
-        ModalBottomSheet(containerColor = Color.White,onDismissRequest = { showReasonModalBottomSheet.value = false }) {
+    if (showReasonModalBottomSheet.value) {
+        ModalBottomSheet(
+            containerColor = Color.White,
+            onDismissRequest = { showReasonModalBottomSheet.value = false }) {
             val innerReason = remember {
                 mutableStateOf(reason.value)
             }
             Column(
                 Modifier.padding(horizontal = 16.dp),
-                ) {
+            ) {
                 Space(40.dp)
-                Text(text = "Reason", fontSize = 18.sp,color =Color.Black)
+                Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+                    text = "Reason", fontSize = 18.sp, color = Color.Black
+                )
                 Space(8.dp)
                 BasicTextField(
                     cursorBrush = SolidColor(Color.Black),
@@ -160,6 +167,7 @@ fun AppointmentScreen(
                         }
                 ) {
                     Text(
+                        fontFamily = Fonts.semiBaldFontInter,
                         text = "Save",
                         fontSize = 14.sp,
                         color = Color.White,
@@ -175,7 +183,9 @@ fun AppointmentScreen(
         }
     }
     Box(
-        Modifier.fillMaxSize().padding(horizontal = 20.dp)
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp)
     ) {
         Column(
             Modifier
@@ -183,8 +193,6 @@ fun AppointmentScreen(
                 .verticalScroll(scrollState)
         )
         {
-            val context = LocalContext.current
-
             Box(
                 Modifier
                     .fillMaxWidth()
@@ -199,7 +207,8 @@ fun AppointmentScreen(
                     )
                 )
                 Text(
-                    text = "Doctor Detail",
+                    fontFamily = Fonts.semiBaldFontInter,
+                    text = "Appointment",
                     fontSize = 16.sp,
                     modifier = Modifier.align(Alignment.Center),
                     color = Color.Black
@@ -220,6 +229,8 @@ fun AppointmentScreen(
 
             Row {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     text = "Date",
                     fontSize = 16.sp,
                     color = Color.Black,
@@ -227,6 +238,7 @@ fun AppointmentScreen(
                 )
                 Space()
                 Text(
+                    fontFamily = Fonts.regularFontInter,
 
                     text = "Change",
                     fontSize = 12.sp,
@@ -256,6 +268,8 @@ fun AppointmentScreen(
                 }
                 Space(14.dp)
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     text = selectedTimeAndDate,
                     fontSize = 14.sp,
                     modifier = Modifier.align(Alignment.CenterVertically)
@@ -278,6 +292,7 @@ fun AppointmentScreen(
 
             Row {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
                     text = "Reason",
                     fontSize = 16.sp,
                     color = Color.Black,
@@ -285,6 +300,8 @@ fun AppointmentScreen(
                 )
                 Space()
                 Text(
+                    fontFamily = Fonts.regularFontInter,
+
                     text = "Change",
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.text_gray),
@@ -313,6 +330,8 @@ fun AppointmentScreen(
                 }
                 Space(14.dp)
                 Text(
+
+                    fontFamily = Fonts.semiBaldFontInter,
                     text = reason.value,
                     fontSize = 14.sp,
                     modifier = Modifier.align(Alignment.CenterVertically)
@@ -328,7 +347,11 @@ fun AppointmentScreen(
             )
             Space(12.dp)
 
-            PaymentDetailsPart(consultationPrice.value, adminFee.value, additionalDiscount.value)//TODO:chage when backend will added
+            PaymentDetailsPart(
+                consultationPrice.value,
+                adminFee.value,
+                additionalDiscount.value
+            )//TODO:chage when backend will added
 
             Space(15.dp)
             Box(
@@ -340,7 +363,10 @@ fun AppointmentScreen(
             Space(15.dp)
 
 
-            Text(text = "Payment Method", fontSize = 16.sp, color = Color.Black)
+            Text(
+                fontFamily = Fonts.semiBaldFontInter,
+                text = "Payment Method", fontSize = 16.sp, color = Color.Black
+            )
 
             Space(16.dp)
 
@@ -365,6 +391,7 @@ fun AppointmentScreen(
 
 
                 Text(
+                    fontFamily = Fonts.regularFontInter,
                     text = "Change",
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.text_gray),
@@ -386,11 +413,18 @@ fun AppointmentScreen(
         ) {
             Column() {
                 Text(
+                    fontFamily = Fonts.mediumFontInter,
+
                     text = "Total",
                     fontSize = 14.sp,
                     color = colorResource(id = R.color.different_gray)
                 )
-                Text(text = stringResource(id = R.string.price_tenge,totalPrice), fontSize = 18.sp, color = Color.Black)
+                Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+                    text = stringResource(id = R.string.price_tenge, totalPrice),
+                    fontSize = 18.sp,
+                    color = Color.Black
+                )
             }
             Space()
             Box(
@@ -400,12 +434,19 @@ fun AppointmentScreen(
                         RoundedCornerShape(32.dp)
                     )
                     .clickable {
-                        viewModel.scheduleTime(doctorName = doctor.name, doctor_id = doctor.id, speciality = doctor.speciality, doctorImage = doctor.image, time = selectedTimeAndDate)
+                        viewModel.scheduleTime(
+                            doctorName = doctor.name,
+                            doctor_id = doctor.id,
+                            speciality = doctor.speciality,
+                            doctorImage = doctor.image,
+                            time = selectedTimeAndDate
+                        )
                         showSuccessDialog.value = true
                         navigateBacktoHome.invoke()
                     }
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
                     text = "Booking",
                     fontSize = 14.sp,
                     color = Color.White,
@@ -422,47 +463,67 @@ fun AppointmentScreen(
 fun PaymentDetailsPart(consultationPrice: Int, adminFee: Int, additionalDiscount: Int) {
     Column(Modifier.fillMaxWidth()) {
         val total = consultationPrice + adminFee - additionalDiscount
-        Text(text = "Payment Details", fontSize = 16.sp, color = Color.Black)
+        Text(
+            fontFamily = Fonts.semiBaldFontInter,
+            text = "Payment Details", fontSize = 16.sp, color = Color.Black
+        )
         Space(14.dp)
 
         Row(
             Modifier.fillMaxWidth()
         ) {
             Text(
+                fontFamily = Fonts.regularFontInter,
                 text = "Consultation",
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.different_gray)
             )
             Space()
-            Text(text =  stringResource(id = R.string.price_tenge,consultationPrice), color = Color.Black, fontSize = 14.sp)
+            Text(
+                fontFamily = Fonts.regularFontInter,
+                text = stringResource(id = R.string.price_tenge, consultationPrice),
+                color = Color.Black,
+                fontSize = 14.sp
+            )
         }
         Space(12.dp)
         Row(
             Modifier.fillMaxWidth()
         ) {
             Text(
+                fontFamily = Fonts.regularFontInter,
+
                 text = "Admin Fee",
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.different_gray)
             )
             Space()
-            Text(text = stringResource(id = R.string.price_tenge,adminFee), color = Color.Black, fontSize = 14.sp)
+            Text(
+                fontFamily = Fonts.regularFontInter,
+                text = stringResource(id = R.string.price_tenge, adminFee),
+                color = Color.Black,
+                fontSize = 14.sp
+            )
         }
         Space(12.dp)
         Row(
             Modifier.fillMaxWidth()
         ) {
             Text(
+                fontFamily = Fonts.regularFontInter,
+
                 text = "Additional Discount",
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.different_gray)
             )
             Space()
             Text(
+                fontFamily = Fonts.regularFontInter,
+
                 text = if (additionalDiscount <= 0) {
                     "-"
                 } else {
-                    stringResource(id = R.string.price_tenge,additionalDiscount)
+                    stringResource(id = R.string.price_tenge, additionalDiscount)
                 }, color = Color.Black, fontSize = 14.sp
             )
         }
@@ -472,12 +533,20 @@ fun PaymentDetailsPart(consultationPrice: Int, adminFee: Int, additionalDiscount
             Modifier.fillMaxWidth()
         ) {
             Text(
+                fontFamily = Fonts.semiBaldFontInter,
+
                 text = "Total",
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.different_gray)
             )
             Space()
-            Text(text =  stringResource(id = R.string.price_tenge,total), color = Color.Black, fontSize = 14.sp)
+            Text(
+
+                fontFamily = Fonts.semiBaldFontInter,
+                text = stringResource(id = R.string.price_tenge, total),
+                color = colorResource(id = R.color.blue),
+                fontSize = 14.sp
+            )
         }
 
     }
@@ -515,6 +584,8 @@ fun SuccessAppointmentDialog(onDismiss: () -> Unit, onChat: () -> Unit) {
             }
             Space(40.dp)
             Text(
+                fontFamily = Fonts.baldFontInter,
+
                 text = "Payment Suceess", fontSize = 20.sp,
                 color = Color.Black, modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -522,6 +593,8 @@ fun SuccessAppointmentDialog(onDismiss: () -> Unit, onChat: () -> Unit) {
             Space(8.dp)
 
             Text(
+                fontFamily = Fonts.regularFontInter,
+
                 text = "Your payment has been successful, you can have a consultation session with your trusted doctor",
                 color = colorResource(
                     id = R.color.different_gray
@@ -546,6 +619,8 @@ fun SuccessAppointmentDialog(onDismiss: () -> Unit, onChat: () -> Unit) {
                     }
             ) {
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     text = "Chat Doctor",
                     modifier = Modifier
                         .align(Alignment.Center)

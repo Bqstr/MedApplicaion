@@ -1,12 +1,10 @@
-package io.oitech.med_application
+package io.oitech.med_application.fragments.doctor_details
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,8 +23,6 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,15 +35,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import io.oitech.med_application.Color.ColorScheduleWeakBlue
+import io.oitech.med_application.R
 import io.oitech.med_application.fragments.homeFragment.DateOfTheWeek
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
 import io.oitech.med_application.fragments.homeFragment.TimeSlot
 import io.oitech.med_application.utils.ComposableUtils.FirebaseImageLoader
 import io.oitech.med_application.utils.ComposableUtils.Space
+import io.oitech.med_application.utils.Fonts
 
 
 @Composable
@@ -55,7 +50,7 @@ fun DoctorDetailsScreen(
     doctor: HomeDoctorUiItem,
     navigateToAppointment: (HomeDoctorUiItem) -> Unit,
     navigateBack: () -> Boolean,
-    navigateToChat:(Int) ->Unit
+    navigateToChat: (Int) -> Unit
 ) {
     val appointmentInfo = remember {
         mutableStateOf<HomeDoctorUiItem?>(null)
@@ -91,6 +86,7 @@ fun DoctorDetailsScreen(
                         }
                 )
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
                     text = "Doctor Detail",
                     fontSize = 16.sp,
                     modifier = Modifier.align(Alignment.Center),
@@ -113,12 +109,16 @@ fun DoctorDetailsScreen(
 
 
             Text(
+                fontFamily= Fonts.semiBaldFontInter,
+
                 text = "About",
                 fontSize = 16.sp,
                 color = Color.Black,
                 modifier = Modifier.padding(start = 22.dp)
             )
             Text(
+                fontFamily= Fonts.regularFontInter,
+
                 lineHeight = 20.sp,
                 text = doctor.description,
                 fontSize = 12.sp,
@@ -132,8 +132,9 @@ fun DoctorDetailsScreen(
 
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 12.dp),
-                modifier =Modifier.fillMaxWidth()) {
-                items(doctor.listOfTimes.size,) { dateNum ->
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(doctor.listOfTimes.size) { dateNum ->
                     SelectedDateSlot(
                         doctor.listOfTimes[dateNum],
                         selectedDate.value == doctor.listOfTimes[dateNum],
@@ -320,6 +321,8 @@ fun SelectedDateSlot(dateOfTheWeek: DateOfTheWeek, selected: Boolean, onSelect: 
         Column(Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.height(14.dp))
             Text(
+                fontFamily= Fonts.regularFontInter,
+
                 text = dateOfTheWeek.dateName.substring(0..3), color = if (selected) {
                     Color.White
                 } else {
@@ -328,6 +331,8 @@ fun SelectedDateSlot(dateOfTheWeek: DateOfTheWeek, selected: Boolean, onSelect: 
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
+                fontFamily= Fonts.semiBaldFontInter,
+
                 text = dateOfTheWeek.dateNumber.toString(), color = if (selected) {
                     Color.White
                 } else {
@@ -357,29 +362,32 @@ fun DoctorItemForDetails(doctor: HomeDoctorUiItem, withHorizontalPadding: Boolea
     {
 
 
-        Log.d("slkdjflksjdfkljdsfkl",doctor.toString())
-        if(doctor.image.isNotBlank()
-            ) {
+        if (doctor.image.isNotBlank()
+        ) {
             FirebaseImageLoader(
                 imagePath = doctor.image, modifier = Modifier
                     .size(115.dp)
-                    .clip(RoundedCornerShape(8.dp),), contentScale = ContentScale.Crop
+                    .clip(RoundedCornerShape(8.dp)), contentScale = ContentScale.Crop
             )
 
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.doctor_mock_image),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(115.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
         }
 
-//        Image(
-//            painter = painterResource(id = R.drawable.doctor_mock_image),
-//            contentDescription = null,
-//            modifier = Modifier
-//                .size(115.dp)
-//                .clip(RoundedCornerShape(8.dp)),
-//            contentScale = ContentScale.Crop
-//        )
+
         Column(Modifier.padding(start = 18.dp)) {
-            Text(text = doctor.name, fontSize = 18.sp, color = Color.Black)
+            Text(
+                fontFamily= Fonts.semiBaldFontInter, text = doctor.name, fontSize = 18.sp, color = Color.Black)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
+                fontFamily= Fonts.mediumFontInter,
                 text = doctor.speciality,
                 color = colorResource(id = R.color.text_gray),
                 fontSize = 12.sp
@@ -399,6 +407,8 @@ fun DoctorItemForDetails(doctor: HomeDoctorUiItem, withHorizontalPadding: Boolea
                         .padding(start = 4.dp, end = 5.dp)
                 )
                 Text(
+                    fontFamily= Fonts.mediumFontInter,
+
                     text = doctor.rating,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 2.dp, end = 3.dp, bottom = 2.dp)
@@ -413,6 +423,8 @@ fun DoctorItemForDetails(doctor: HomeDoctorUiItem, withHorizontalPadding: Boolea
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
+                    fontFamily= Fonts.mediumFontInter,
+
                     text = doctor.distance.toString(),
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.text_gray)

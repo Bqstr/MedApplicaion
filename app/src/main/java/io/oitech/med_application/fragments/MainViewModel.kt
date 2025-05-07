@@ -1,7 +1,6 @@
 package io.oitech.med_application.fragments
 
 import android.app.Activity
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,11 +17,13 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.oitech.med_application.MainActivity
+import io.oitech.med_application.fragments.chat.ChatMessageModel
+import io.oitech.med_application.fragments.chat.ChatRoomModel
 import io.oitech.med_application.fragments.homeFragment.DateOfTheWeek
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItemWithout
 import io.oitech.med_application.fragments.homeFragment.TimeSlot
+import io.oitech.med_application.fragments.hospitalList.HospitalModel
 import io.oitech.med_application.fragments.schedule.ScheduleStatus
 import io.oitech.med_application.fragments.schedule.ScheduleUIItem
 import io.oitech.med_application.utils.FirstLaunchManager

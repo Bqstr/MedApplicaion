@@ -1,4 +1,4 @@
-package io.oitech.med_application.fragments
+package io.oitech.med_application.fragments.chat
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -37,8 +37,10 @@ import androidx.compose.ui.unit.sp
 import io.oitech.med_application.Color.ColorOfMessageInChat
 import io.oitech.med_application.Color.ColorScheduleWeakBlue
 import io.oitech.med_application.R
+import io.oitech.med_application.fragments.MainViewModel
 import io.oitech.med_application.utils.ComposableUtils
 import io.oitech.med_application.utils.ComposableUtils.Space
+import io.oitech.med_application.utils.Fonts
 
 @Composable
 fun ChatScreen(onBackPress: () -> Unit, chatRoomModel: ChatRoomModel, viewModel: MainViewModel) {
@@ -53,7 +55,6 @@ fun ChatScreen(onBackPress: () -> Unit, chatRoomModel: ChatRoomModel, viewModel:
     val messages =
         viewModel.messages.collectAsState().value.get(chatRoomModel.doctorId) ?: emptyList()
 
-    Log.d("sdfsdfsadfsdfasdfsdf", "compose")
     Box(Modifier.fillMaxSize()) {
 
 
@@ -75,6 +76,7 @@ fun ChatScreen(onBackPress: () -> Unit, chatRoomModel: ChatRoomModel, viewModel:
                 Space(26.dp)
 
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
                     text = chatRoomModel.doctorName,
                     fontSize = 16.sp,
                     color = Color.Black,
@@ -125,6 +127,8 @@ fun ChatScreen(onBackPress: () -> Unit, chatRoomModel: ChatRoomModel, viewModel:
             ) {
                 Space()
                 Text(
+                    fontFamily = Fonts.semiBaldFontInter,
+
                     text = "Consultation Start",
                     color = colorResource(id = R.color.blue),
                     fontSize = 16.sp,
@@ -134,6 +138,8 @@ fun ChatScreen(onBackPress: () -> Unit, chatRoomModel: ChatRoomModel, viewModel:
 
 
                 Text(
+                fontFamily = Fonts.semiBaldFontInter,
+
                     text = "You can consult your problem to the doctor",
                     color = colorResource(id = R.color.text_gray),
                     fontSize = 12.sp,
@@ -271,9 +277,13 @@ fun DoctorMessage(
                         .align(Alignment.CenterVertically)
                         .padding(13.dp)
                 ) {
-                    Text(text = doctorName, fontSize = 14.sp, color = Color.Black)
+                    Text(
+                        fontFamily = Fonts.semiBaldFontInter,
+                        text = doctorName, fontSize = 14.sp, color = Color.Black)
                     Space(4.dp)
                     Text(
+                    fontFamily = Fonts.mediumFontInter,
+
                         text = timePassed,
                         fontSize = 10.sp,
                         color = colorResource(id = R.color.text_gray)
@@ -289,6 +299,8 @@ fun DoctorMessage(
             )
         ) {
             Text(
+                fontFamily = Fonts.regularFontInter,
+
                 text = message,
                 modifier = Modifier
                     .align(Alignment.Center)

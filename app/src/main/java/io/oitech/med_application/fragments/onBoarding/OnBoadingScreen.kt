@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import io.oitech.med_application.Color.ColorOnBoardingIndicator
 import io.oitech.med_application.Color.SecondaryColor
 import io.oitech.med_application.R
+import io.oitech.med_application.utils.Fonts
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,7 +71,8 @@ fun OnBoardingScreen(navigateToMainScreen: () -> Unit ) {
                                 .padding(horizontal = 56.dp, vertical = 24.dp)
                         ) {
                             Text(
-                                text = "Your Healthcare Journey Starts Here",
+                                fontFamily = Fonts.semiBaldFontInter,
+                                text = "Find Medical Facilities Easily",
                                 fontSize = 24.sp,
                                 color = Color.Black,
                                 textAlign = TextAlign.Center,
@@ -78,7 +80,9 @@ fun OnBoardingScreen(navigateToMainScreen: () -> Unit ) {
                                 lineHeight = 32.sp
                             )
                             Text(
-                                text = "Easily find medical facilities, book appointments, manage your schedule, and track your queue status—all in one place",
+                                fontFamily = Fonts.lightFontInter,
+
+                                text = "Discover nearby medical facilities with comprehensive details to help you choose the right care.",
                                 fontSize = 14.sp,
                                 color = SecondaryColor,
                                 textAlign = TextAlign.Center,
@@ -104,7 +108,9 @@ fun OnBoardingScreen(navigateToMainScreen: () -> Unit ) {
                                     .padding(vertical = 12.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "Get Started", color = Color.White, fontSize = 16.sp)
+                                Text(
+                                    fontFamily = Fonts.semiBaldFontInter,
+                                    text = "Get Started", color = Color.White, fontSize = 16.sp)
                             }
                             Spacer(modifier = Modifier.height(30.dp))
                         }
@@ -135,6 +141,8 @@ fun OnBoardingScreen(navigateToMainScreen: () -> Unit ) {
                                     .padding(start = 56.dp, bottom = 16.dp, end = 56.dp)
                             ) {
                                 Text(
+                                    fontFamily = Fonts.semiBaldFontInter,
+
                                     text = "Your Healthcare Journey Starts Here",
                                     fontSize = 24.sp,
                                     color = Color.Black,
@@ -143,6 +151,8 @@ fun OnBoardingScreen(navigateToMainScreen: () -> Unit ) {
                                     lineHeight = 32.sp
                                 )
                                 Text(
+                                    fontFamily = Fonts.lightFontInter,
+
                                     text = "Easily find medical facilities, book appointments, manage your schedule, and track your queue status—all in one place",
                                     fontSize = 14.sp,
                                     color = SecondaryColor,
@@ -171,7 +181,9 @@ fun OnBoardingScreen(navigateToMainScreen: () -> Unit ) {
                                         .padding(vertical = 12.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(text = "Next", color = Color.White, fontSize = 16.sp)
+                                    Text(
+                                        fontFamily = Fonts.semiBaldFontInter,
+                                        text = "Next", color = Color.White, fontSize = 16.sp)
                                 }
                                 Spacer(modifier = Modifier.height(50.dp))
                             }
@@ -212,3 +224,4 @@ fun OnBoardingPagerButtons(currentState: Int, count: Int) {
 fun prevvv(){
     OnBoardingScreen({})
 }
+

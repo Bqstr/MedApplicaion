@@ -1,4 +1,4 @@
-package io.oitech.med_application.fragments
+package io.oitech.med_application.fragments.chatList
 
 import android.os.Bundle
 import android.util.Log
@@ -8,16 +8,13 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.R
+import io.oitech.med_application.fragments.MainViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
  * A simple [Fragment] subclass.
  * Use the [MessagesFragment.newInstance] factory method to
@@ -26,14 +23,10 @@ private const val ARG_PARAM2 = "param2"
 @AndroidEntryPoint
 class MessagesFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -97,8 +90,6 @@ class MessagesFragment : Fragment() {
         fun newInstance(param1: String, param2: String) =
             MessagesFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
                 }
             }
 

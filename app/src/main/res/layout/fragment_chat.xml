@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:andorid="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.ChatFragment">
+    tools:context=".fragments.chat.ChatFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.compose.ui.platform.ComposeView

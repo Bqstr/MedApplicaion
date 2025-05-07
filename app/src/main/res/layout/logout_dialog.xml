@@ -47,6 +47,8 @@
             android:layout_height="40dp"/>
 
         <TextView
+            android:fontFamily="@font/inter_bald"
+
             android:paddingHorizontal="32dp"
             android:textColor="@color/black"
             android:textAlignment="center"
@@ -77,6 +79,8 @@
             android:paddingVertical="16dp">
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
+
                 android:textSize="16sp"
                 android:lineHeight="24sp"
                 android:textColor="@color/white"
@@ -87,6 +91,8 @@
         </FrameLayout>
 
         <TextView
+            android:fontFamily="@font/inter_semibald"
+            
             android:id="@+id/cancel_logout_alert"
             android:textSize="16dp"
             android:layout_marginTop="16dp"

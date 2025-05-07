@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.MapFragment">
+    tools:context=".fragments.map.MapFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -51,6 +51,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -121,6 +122,8 @@
                 android:layout_height="14dp" />
 
             <TextView
+                android:fontFamily="@font/inter_semibald"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
@@ -150,6 +153,8 @@
                     android:src="@drawable/location_red" />
 
                 <TextView
+                    android:fontFamily="@font/inter_regular"
+
                     android:id="@+id/my_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -178,6 +183,8 @@
                 android:paddingVertical="14dp">
 
                 <TextView
+                    android:fontFamily="@font/inter_semibald"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
