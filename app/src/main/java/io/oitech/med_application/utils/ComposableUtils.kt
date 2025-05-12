@@ -58,8 +58,10 @@ object ComposableUtils {
     @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     fun FirebaseImageLoader(imagePath: String,modifier: Modifier,contentScale: ContentScale) {
+    Log.e("slkdjflksjdfkljdsfkl", "doing ${imagePath}")
+
         val storage = Firebase.storage
-        val storageRef = storage.reference.child("${imagePath}")
+        val storageRef = storage.reference.child(imagePath)
 
         //Not Sure that this is the right way
         var imageUrl = remember { mutableStateOf<String?>("https://firebasestorage.googleapis.com/v0/b/med-project-4397f.firebasestorage.app/o/${imagePath}?alt=media") }

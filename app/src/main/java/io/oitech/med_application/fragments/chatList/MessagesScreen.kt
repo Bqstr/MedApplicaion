@@ -57,7 +57,8 @@ fun MessagesScreen(
             Text(
 
                 fontFamily = Fonts.semiBaldFontInter,
-               text = "Messages", fontSize = 24.sp, color = Color.Black)
+                text = "Messages", fontSize = 24.sp, color = Color.Black
+            )
             Space()
             Icon(
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -174,7 +175,7 @@ fun MessagesScreen(
 
         LazyColumn(Modifier.fillMaxWidth()) {
             items(messageRoomsList) {
-                MessageRoomComposeItem(it, goToChat =navigateToChatRoom)
+                MessageRoomComposeItem(it, goToChat = navigateToChatRoom)
             }
         }
     }
@@ -186,19 +187,32 @@ fun MessageRoomComposeItem(
     goToChat: (Int)//doctorId
     -> Unit
 ) {
-    val lastMessageTime =Utils.formatMessageTimeForLastMessage(item.lastMessageTime)
+    val lastMessageTime = Utils.formatMessageTimeForLastMessage(item.lastMessageTime)
     Box(Modifier.noRippleClickable {
         goToChat(item.doctorId)
     }) {
         Row(Modifier.padding(vertical = 12.dp)) {
-            ComposableUtils.FirebaseImageLoader(
-                imagePath = item.doctorImage, modifier = Modifier
-                    .size(50.dp)
-                    .clip(
-                        CircleShape
-                    )
-                    .align(Alignment.CenterVertically), contentScale = ContentScale.Fit
-            )
+            if (item.doctorImage.isNotBlank() && item.doctorImage.isNotEmpty()) {
+                ComposableUtils.FirebaseImageLoader(
+                    imagePath = item.doctorImage, modifier = Modifier
+                        .size(50.dp)
+                        .clip(
+                            CircleShape
+                        )
+                        .align(Alignment.CenterVertically), contentScale = ContentScale.Fit
+                )
+            } else {
+                Box(
+                    Modifier
+                        .size(50.dp)
+                        .clip(
+                            CircleShape
+                        )
+                        .align(Alignment.CenterVertically)
+                ) {
+
+                }
+            }
 
             Space(15.dp)
 
@@ -217,7 +231,7 @@ fun MessageRoomComposeItem(
                         fontFamily = Fonts.regularFontInter,
 
                         color = ColorOfMessageInChat,
-                        text =   lastMessageTime,
+                        text = lastMessageTime,
                         modifier = Modifier.align(Alignment.CenterVertically),
                         fontSize = 12.sp
                     )

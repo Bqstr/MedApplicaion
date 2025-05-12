@@ -346,7 +346,8 @@
         android:id="@+id/home_doctors_recuclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="horizontal" />
+        android:scrollbars="none"
+        />
 
     <!-- TODO: Update blank fragment layout -->
 

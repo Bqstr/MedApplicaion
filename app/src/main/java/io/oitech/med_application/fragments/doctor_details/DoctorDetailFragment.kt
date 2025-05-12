@@ -1,14 +1,18 @@
 package io.oitech.med_application.fragments.doctor_details
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.R
+import io.oitech.med_application.fragments.SearchScreen
+import io.oitech.med_application.fragments.SearchViewModel
 import io.oitech.med_application.fragments.chat.ChatFragment
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
 
@@ -24,7 +28,9 @@ import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
 class DoctorDetailFragment : Fragment() {
     // TODO: Rename and change types of parameters
 
+    val searchViewModel: SearchViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -39,20 +45,26 @@ class DoctorDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        Log.d("asdfasdfasdfasfd", "abobus")
         val doctor = arguments?.getParcelable<HomeDoctorUiItem?>("doctorDetails")
+        Log.d("asdfasdfasdfasfd", doctor.toString())
+
         val composeView = view.findViewById<ComposeView>(R.id.doctor_detail_compose_view)
 
-        val navigateToAppointment:(HomeDoctorUiItem) ->Unit ={doctor ->
+        val navigateToAppointment: (HomeDoctorUiItem) -> Unit = { doctor ->
             val bundle = Bundle()
             bundle.putParcelable("doctorAppointment", doctor)
-            findNavController().navigate(R.id.action_doctorDetailFragment_to_appointmentFragment, bundle)
+            findNavController().navigate(
+                R.id.action_doctorDetailFragment_to_appointmentFragment,
+                bundle
+            )
 
         }
-        val navigateBack ={
+        val navigateBack: () -> Unit = {
             findNavController().popBackStack()
 
         }
-        val navigateToChatToDoctor :(Int) ->Unit ={
+        val navigateToChatToDoctor: (Int) -> Unit = {
             val bundle = Bundle().apply {
                 putInt("DOCTOR_ID_PARAM", it)
             }
@@ -62,10 +74,16 @@ class DoctorDetailFragment : Fragment() {
 
 
         composeView.setContent {
-            if(doctor!=null) {
-                DoctorDetailsScreen(doctor = doctor,navigateToAppointment,navigateBack =navigateBack, navigateToChat = {
-                    navigateToChatToDoctor.invoke(it)
-                })
+            if (doctor != null) {
+//                DoctorDetailsScreen(doctor = doctor,navigateToAppointment,navigateBack =navigateBack, navigateToChat = {
+//                    navigateToChatToDoctor.invoke(it)
+//                })
+                SearchScreen(
+                    navigateBack = navigateBack,
+                    navigateToDoctor = {},
+                    navigateToDrugDetail = {},
+                    viewModel = searchViewModel
+                )
             }
         }
     }

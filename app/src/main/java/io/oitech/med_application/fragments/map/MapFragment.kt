@@ -3,6 +3,8 @@ package io.oitech.med_application.fragments.map
 import android.Manifest
 import android.app.AlertDialog
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.location.Geocoder
 import android.location.Location
 import android.os.Build
@@ -29,8 +31,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.R
 import io.oitech.med_application.databinding.FragmentMapBinding
@@ -172,7 +177,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .build()
 
 
-
         Log.d("sadfasdfasdfasdfasdf", "map ready")
 
 
@@ -194,7 +198,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //            mFusedLocationClient!!.lastLocation(
 //                mLocationRequest, mLocationCallback, Looper.myLooper()
 //            )
-            mGoogleMap.setMyLocationEnabled(true)
+                //mGoogleMap.setMyLocationEnabled(true)
 
 
         } else {
@@ -246,11 +250,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     fun assignLocation(location: Location?) {
         if (location != null) {
-
             mLastLocation = location
             val latLng = LatLng(location.latitude, location.longitude)
 
+            // Clear existing markers if needed
+            mGoogleMap.clear()
 
+            // Use vector icon for marker
+            val markerIcon = bitmapDescriptorFromVector(R.drawable.my_location_green)
+            mGoogleMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .icon(markerIcon)
+                    .title("You are here")
+            )
+
+            // Optional: Get and display address
             val geocoder = Geocoder(requireContext())
             val addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
 
@@ -258,15 +273,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val address = addressList[0]
                 val fullAddress = address.getAddressLine(0)
 
-                Log.d("sadfasdfasdfasdfasdf",address.toString())
-
+                Log.d("LocationAddress", address.toString())
                 viewModel.addressFromGeocode.value = Resource.Success(fullAddress)
-
                 Toast.makeText(requireContext(), fullAddress, Toast.LENGTH_LONG).show()
             }
 
-            // Optionally update marker or do other logic...
-
+            // Move camera once
             if (!hasCenteredMap) {
                 val cameraPosition = CameraPosition.Builder()
                     .target(latLng)
@@ -276,6 +288,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 hasCenteredMap = true
             }
         }
+    }
+
+    private fun bitmapDescriptorFromVector(vectorResId: Int): BitmapDescriptor {
+        val vectorDrawable = ContextCompat.getDrawable(requireContext(), vectorResId)!!
+        vectorDrawable.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
     private fun checkLocationPermission() {

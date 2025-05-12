@@ -101,6 +101,8 @@ class HomeFragment : Fragment(),OnItemClickListener {
                 }
             }
         }
+            //viewModel.addDocotor()
+        viewModel.addAppointmentSlots()
 
 
 

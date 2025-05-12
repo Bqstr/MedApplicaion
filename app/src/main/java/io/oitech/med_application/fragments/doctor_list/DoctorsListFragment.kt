@@ -58,21 +58,21 @@ class DoctorsListFragment : Fragment() {
                 name = "Dr. Smith",
                 image = "https://example.com/image1.jpg",
                 speciality = "Cardiologist",
-                distance = 6000.0,
+                distance = "6000.0",
                 rating = "5.0",
                 id = 0,
                 hospitalId = 0,
-                price = 10000
+                price = "10000"
             ),
             HomeDoctorUiItem(
                 name = "Dr. Jane",
                 image = "https://example.com/image2.jpg",
                 speciality = "Dentist",
-                distance = 5000.0,
+                distance = "5000.0",
                 rating = "4.5",
                 id = 1,
                 hospitalId = 0,
-                price = 6000
+                price = "6000"
             )
         )
 

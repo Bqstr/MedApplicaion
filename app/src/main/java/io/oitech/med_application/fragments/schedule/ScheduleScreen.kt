@@ -1,9 +1,9 @@
 package io.oitech.med_application.fragments.schedule
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposableTarget
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +51,9 @@ fun ScheduleScreen(viewModel: MainViewModel) {
 
     val scheduledItems = viewModel.scheduleList.collectAsState().value
 
+    val onCancelSchedule :(String,Int) ->Unit ={time,doctorId ->
+        viewModel.cancelSchedule(doctorId,time)
+    }
 
 
     Column(
@@ -185,7 +187,9 @@ fun ScheduleScreen(viewModel: MainViewModel) {
             if (scheduledItems is Resource.Success) {
                 items(scheduledItems.data ?: emptyList()) {
                     if (it.status == selectedScheduleStatus.value) {
-                        ScheduleListComposeItem(it, onReschedule = {}, onCancel = {})
+                        ScheduleListComposeItem(it, onReschedule = {}, onCancel = {
+                            onCancelSchedule(it.time,it.doctorId)
+                        })
                     }
                 }
             }
@@ -321,6 +325,10 @@ fun ScheduleListComposeItem(
                 modifier = Modifier
                     .weight(1f)
                     .background(ColorScheduleWeakBlue, RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable {
+                        onCancel.invoke()
+                    }
                     .padding(vertical = 6.dp)
             ) {
                 Text(
@@ -357,6 +365,7 @@ fun ScheduleListComposeItem(
 }
 
 data class ScheduleUIItem(
+    val doctorId:Int,
     val doctorName: String,
     val doctorSpeciality: String,
     val doctorImage: String,

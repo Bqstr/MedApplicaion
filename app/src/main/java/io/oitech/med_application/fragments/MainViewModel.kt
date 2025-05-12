@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
@@ -32,7 +33,9 @@ import io.oitech.med_application.utils.UIdManager
 import io.oitech.med_application.utils.Utils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -45,7 +48,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    val hospitals =MutableStateFlow<Resource<List<HospitalModel>>>(Resource.Unspecified())
+    val hospitals = MutableStateFlow<Resource<List<HospitalModel>>>(Resource.Unspecified())
     val messages = MutableStateFlow<Map<Int, List<ChatMessageModel>>>(emptyMap())
 
     private val _messageRooms = MutableStateFlow<List<ChatRoomModel>>(emptyList())
@@ -85,7 +88,6 @@ class MainViewModel @Inject constructor(
         val db = FirebaseFirestore.getInstance()
         val doctorsRef = db.collection("doctor") // Ensure the collection name is correct
         val timeSlot = db.collection("TimeSlot") // Ensure the collection name is correct
-        val dateOfTheWeek = db.collection("DateOfTheWeek") // Ensure the collection name is correct
 
 
         doctorsRef
@@ -97,7 +99,8 @@ class MainViewModel @Inject constructor(
                     it.toObject(HomeDoctorUiItemWithout::class.java)
                 }
                 doctors.value = Resource.Loading()
-                timeSlot.get()
+                timeSlot
+                    .get()
                     .addOnSuccessListener { timeSlotSnapshot: QuerySnapshot ->
 
                         val timeSlotList = timeSlotSnapshot.documents.mapNotNull {
@@ -106,114 +109,119 @@ class MainViewModel @Inject constructor(
 
 
 
-                        val myMap =
-                            timeSlotList.groupBy { it.time.substring(0, 10) }//TODO:check this
+
+                        doctors.value = Resource.Success(doctorsList.map { doctor ->
+
+                            val myMap =
+                                timeSlotList.filter { it.doctor_id==doctor.id }.groupBy { it.time.substring(0, 10) }//TODO:check this
 
 
-
-                        val listOfDates = mutableListOf<DateOfTheWeek>()
-
-                        myMap.forEach() { key, value ->
-                            val fullTime = (value.firstOrNull()?.time ?: "")
-
-                            if (fullTime.isNotBlank()) {
-                                val formatter =
-                                    DateTimeFormatter.ofPattern(
-                                        "yyyy-MM-dd HH:mm:ss",
-                                        Locale.ENGLISH
-                                    )
-                                val dateTime = LocalDateTime.parse(fullTime, formatter)
-
-                                val dayName = dateTime.dayOfWeek.name.lowercase()
-                                    .replaceFirstChar { it.uppercase() } // "Tuesday"
-                                val dayOfMonth = dateTime.dayOfMonth // 18
-                                val outputFormatter =
-                                    DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
+                            val listOfDates = mutableListOf<DateOfTheWeek>()
 
 
-                                listOfDates.add(DateOfTheWeek(
-                                    dateTime = fullTime,
-                                    dateName = dayName,
-                                    dateNumber = dayOfMonth,
-                                    listOfDates = value.map {
-                                        val time = dateTime.format(outputFormatter)
-                                        Log.d("asfasdfasdfasfdd", "${time}     ${it.time}")
-                                        TimeSlot(
-                                            time = time,
-                                            dateTime = it.time,
-                                            available = it.aviable
+                            myMap.forEach() { key, value ->
+                                val fullTime = (value.firstOrNull()?.time ?: "")
 
-
+                                if (fullTime.isNotBlank()) {
+                                    val formatter =
+                                        DateTimeFormatter.ofPattern(
+                                            "yyyy-MM-dd HH:mm:ss",
+                                            Locale.ENGLISH
                                         )
-                                    }
+                                    val dateTime = LocalDateTime.parse(fullTime, formatter)
 
-                                )
-                                )
+                                    val dayName = dateTime.dayOfWeek.name.lowercase()
+                                        .replaceFirstChar { it.uppercase() } // "Tuesday"
+                                    val dayOfMonth = dateTime.dayOfMonth // 18
+                                    val outputFormatter =
+                                        DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
+
+
+                                    listOfDates.add(DateOfTheWeek(
+                                        dateTime = fullTime,
+                                        dateName = dayName,
+                                        dateNumber = dayOfMonth,
+                                        listOfDates = value.map {
+                                            val time = dateTime.format(outputFormatter)
+                                            Log.d("asfasdfasdfasfdd", "${time}     ${it.time}")
+                                            TimeSlot(
+                                                time = time,
+                                                dateTime = it.time,
+                                                available = it.available
+
+
+                                            )
+                                        }
+
+                                    )
+                                    )
+                                }
+
+
                             }
 
 
-                        }
-
-
-                        val listOfMockDates = listOf(
-                            DateOfTheWeek(
-                                localDateTime = LocalDateTime.now(),
-                                dateNumber = 15,
-                                dateName = "Monday",
-                                listOfDates = listOf(
-                                    TimeSlot(
-                                        time = "09:00",
-                                        available = true,
-                                        dateTime = Utils.getStringForSelectedTime(
-                                            LocalDateTime.now().withHour(9).withMinute(0)
-                                        )
-                                    ),
-                                    TimeSlot(
-                                        time = "11:00",
-                                        available = false,
-                                        dateTime = Utils.getStringForSelectedTime(
-                                            LocalDateTime.now().withHour(10).withMinute(0)
+                            val listOfMockDates = listOf(
+                                DateOfTheWeek(
+                                    localDateTime = LocalDateTime.now(),
+                                    dateNumber = 15,
+                                    dateName = "Monday",
+                                    listOfDates = listOf(
+                                        TimeSlot(
+                                            time = "09:00",
+                                            available = true,
+                                            dateTime = Utils.getStringForSelectedTime(
+                                                LocalDateTime.now().withHour(9).withMinute(0)
+                                            )
+                                        ),
+                                        TimeSlot(
+                                            time = "11:00",
+                                            available = false,
+                                            dateTime = Utils.getStringForSelectedTime(
+                                                LocalDateTime.now().withHour(10).withMinute(0)
+                                            )
                                         )
                                     )
-                                )
-                            ),
-                            DateOfTheWeek(
-                                localDateTime = LocalDateTime.now().plusDays(1),
-                                dateNumber = 16,
-                                dateName = "Tuesday",
-                                listOfDates = listOf(
-                                    TimeSlot(
-                                        time = "13:00",
-                                        available = true,
-                                        dateTime = Utils.getStringForSelectedTime(
-                                            LocalDateTime.now().plusDays(1).withHour(13)
-                                                .withMinute(0)
-                                        )
-                                    ),
-                                    TimeSlot(
-                                        time = "16:00",
-                                        available = true,
-                                        dateTime = Utils.getStringForSelectedTime(
-                                            LocalDateTime.now().plusDays(1).withHour(16)
-                                                .withMinute(0)
+                                ),
+                                DateOfTheWeek(
+                                    localDateTime = LocalDateTime.now().plusDays(1),
+                                    dateNumber = 16,
+                                    dateName = "Tuesday",
+                                    listOfDates = listOf(
+                                        TimeSlot(
+                                            time = "13:00",
+                                            available = true,
+                                            dateTime = Utils.getStringForSelectedTime(
+                                                LocalDateTime.now().plusDays(1).withHour(13)
+                                                    .withMinute(0)
+                                            )
+                                        ),
+                                        TimeSlot(
+                                            time = "16:00",
+                                            available = true,
+                                            dateTime = Utils.getStringForSelectedTime(
+                                                LocalDateTime.now().plusDays(1).withHour(16)
+                                                    .withMinute(0)
+                                            )
                                         )
                                     )
                                 )
                             )
-                        )
 
-                        doctors.value = Resource.Success(doctorsList.map {
+
+
+
                             HomeDoctorUiItem(
-                                image = it.image,
-                                id = it.id,
-                                description = it.description,
-                                distance = it.distance,
-                                name = it.name,
-                                speciality = it.speciality,
-                                rating = it.rating.toString(),
+                                image = doctor.image,
+                                id = doctor.id,
+                                description = doctor.description,
+                                distance = doctor.distance,
+                                name = doctor.name,
+                                speciality = doctor.speciality,
+                                rating = doctor.rating.toString(),
                                 listOfTimes = listOfDates,
-                                hospitalId =it.hospitalId,
-                                price = it.price
+                                hospitalId = doctor.hospitalId,
+                                price = doctor.price
                             )
                         })
 
@@ -248,13 +256,16 @@ class MainViewModel @Inject constructor(
             .get()
             .addOnSuccessListener { querySnapshot: QuerySnapshot ->
 
+                Log.d("timessssssss","doc")
+
 
                 val doctorsList = querySnapshot.documents.mapNotNull {
                     it.toObject(HomeDoctorUiItemWithout::class.java)
                 }
 
                 if (doctorsList.firstOrNull() != null) {
-                    timeSlot.get()
+                    timeSlot
+                        .whereEqualTo("id", doctorId).get()
                         .addOnSuccessListener { timeSlotSnapshot: QuerySnapshot ->
 
                             val timeSlotList = timeSlotSnapshot.documents.mapNotNull {
@@ -262,7 +273,7 @@ class MainViewModel @Inject constructor(
                             }
 
 
-                            Log.d("sadlkjfldasdfjaskldfj", timeSlotList.toString())
+                            Log.d("timessssssss", timeSlotList.toString())
 
                             val myMap =
                                 timeSlotList.groupBy { it.time.substring(0, 10) }//TODO:check this
@@ -301,7 +312,7 @@ class MainViewModel @Inject constructor(
                                             TimeSlot(
                                                 time = time,
                                                 dateTime = it.time,
-                                                available = it.aviable
+                                                available = it.available
 
 
                                             )
@@ -339,6 +350,9 @@ class MainViewModel @Inject constructor(
 
 
                         }
+                        .addOnFailureListener{
+                            Log.d("timessssssss","no time list")
+                        }
                 } else {
 
                 }
@@ -359,7 +373,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun getUid(): String {
-        return uidManager.getUId()
+        val s =uidManager.getUId()
+        Log.d("sadfasdfasdfasdfasdf",s)
+        return s
     }
 
     fun getScheduleList() {
@@ -378,6 +394,7 @@ class MainViewModel @Inject constructor(
                 Log.d("asdfasdfasdfasdfasdf", schedules.toString())
                 scheduleList.value = Resource.Success(schedules.map {
                     ScheduleUIItem(
+                        doctorId = it.doctor_id,
                         doctorName = it.doctorName,
                         doctorImage = it.doctorImage,
                         doctorSpeciality = it.speciality,
@@ -425,7 +442,7 @@ class MainViewModel @Inject constructor(
                 }
                 hospitals.value = Resource.Success(hospitalList)
 
-            }.addOnFailureListener{
+            }.addOnFailureListener {
                 hospitals.value = Resource.Failure(it.message.toString())
 
             }
@@ -453,6 +470,11 @@ class MainViewModel @Inject constructor(
 
         db.collection("Schedule").add(newScheduleItem)
             .addOnSuccessListener {
+                Log.d("sadkjfadfhkajsd","here")
+
+                changeTimeAviabilityOfScheduleOfDoctor(doctorId = doctor_id,time =time, value = false, onSuccess = {
+                    getAllDoctors()
+                })
                 //  onResult(true, "User registered and data saved")
             }
             .addOnFailureListener { e ->
@@ -461,6 +483,88 @@ class MainViewModel @Inject constructor(
 
 
     }
+
+    fun changeTimeAviabilityOfScheduleOfDoctor(value:Boolean, time:String, doctorId:Int, onSuccess:() ->Unit){
+//        val database = FirebaseDatabase.getInstance()
+//        val ref = database.getReference("TimeSlot")
+//
+//        Log.d("sadkjfadfhkajsd","aaaaaa")
+//
+//        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                Log.d("sadkjfadfhkajsd",snapshot.children.toString())
+//
+//                for (child in snapshot.children) {
+//                    Log.d("sadkjfadfhkajsd","bbbbb")
+//
+//                    val idHere = child.child("doctor_id").getValue(Int::class.java)
+//                    val timeHere = child.child("time").getValue(String::class.java)
+//
+//                    if (idHere == doctorId && timeHere == time) {
+//                        val updates = mapOf<String, Any>(
+//                            "aviable" to value // For example: update age
+//                        )
+//                        child.ref.updateChildren(updates)
+//                    }
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                // Handle error
+//            }
+//        })
+
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("TimeSlot")
+            .whereEqualTo("doctor_id", doctorId)
+            .whereEqualTo("time", time)
+            .get()
+            .addOnSuccessListener { documents ->
+                Log.w("Firestore aaaaaa", "No error")
+
+                for (document in documents) {
+                    db.collection("TimeSlot")
+                        .document(document.id)
+                        .update("available", value)
+                    onSuccess.invoke()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore aaaaaa", "Error getting documents: ", exception)
+            }
+
+    }
+
+    fun cancelSchedule(doctor_id: Int,time:String){
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("Schedule")
+            .whereEqualTo("uid", getUid())
+            .whereEqualTo("doctor_id", doctor_id)
+            .whereEqualTo("time",time)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    db.collection("Schedule")
+                        .document(document.id)
+                        .update("status", "Canceled")
+
+
+                    changeTimeAviabilityOfScheduleOfDoctor(true,time,doctor_id) {
+                        getScheduleList()
+                    }
+
+
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+            }
+
+    }
+
+
 
     fun register(
         email: String,
@@ -500,12 +604,17 @@ class MainViewModel @Inject constructor(
                         }
                     // Sign-up successful
                 } else {
-                    Log.e("asdasdasdasdasd", "Regisrter failed: ${task.exception?.message}")
-                }
+                    val exception = task.exception
+                    if (exception is FirebaseAuthUserCollisionException) {
+                        loginByEmailAndPassword(email,password,onSuccess)
+                    } else {
+                        Log.e("Auth", "Registration failed: ${exception?.message}")
+                    }                }
             }
+
     }
 
-    private  var verificationId =MutableLiveData<String?>(null)
+    private var verificationId = MutableLiveData<String?>(null)
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
@@ -520,27 +629,35 @@ class MainViewModel @Inject constructor(
             Log.e("PhoneAuth", "Verification failed", e)
         }
 
-        override fun onCodeSent(verificationIds: String, token: PhoneAuthProvider.ForceResendingToken) {
+        override fun onCodeSent(
+            verificationIds: String,
+            token: PhoneAuthProvider.ForceResendingToken
+        ) {
             // Save verification ID to use later
             verificationId.value = verificationIds
             Log.d("codeeeeeeeee", "Code sent: ${verificationId.value}")
         }
     }
 
-    fun sendVerificationCode(phoneNumber: String,activity: Activity) {
-        Log.d("PhoneAuth",phoneNumber)
-        val auth =Firebase.auth
+    fun sendVerificationCode(phoneNumber: String, activity: Activity) {
+        Log.d("PhoneAuth", phoneNumber)
+        val auth = Firebase.auth
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber)       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-            .setActivity(activity )                 // Activity (for callback binding)
+            .setActivity(activity)                 // Activity (for callback binding)
             .setCallbacks(callbacks)           // OnVerificationStateChangedCallbacks
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
 
-    fun sendVerificationForSignInWithPhone(phoneNumber: String,password: String,activity: Activity,onSuccess: () -> Unit){
+    fun sendVerificationForSignInWithPhone(
+        phoneNumber: String,
+        password: String,
+        activity: Activity,
+        onSuccess: () -> Unit
+    ) {
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
             .setPhoneNumber(phoneNumber) // Phone number in E.164 format
             .setTimeout(60L, TimeUnit.SECONDS)
@@ -562,7 +679,10 @@ class MainViewModel @Inject constructor(
                     Log.e("Auth", "Phone verification failed", e)
                 }
 
-                override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                override fun onCodeSent(
+                    verificationId: String,
+                    token: PhoneAuthProvider.ForceResendingToken
+                ) {
                     // Save verificationId and prompt user to enter code manually
                 }
             })
@@ -571,25 +691,45 @@ class MainViewModel @Inject constructor(
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
-    fun verifyCode(code: String,onSuccess: () -> Unit,phoneNumber: String,name:String,password: String) {
-        Log.d("codeeeeeeeee",verificationId.value?:"")
-        if(verificationId.value!=null) {
+    fun verifyCode(
+        code: String,
+        onSuccess: () -> Unit,
+        phoneNumber: String,
+        name: String,
+        password: String
+    ) {
+        Log.d("codeeeeeeeee", verificationId.value ?: "")
+        if (verificationId.value != null) {
             val credential = PhoneAuthProvider.getCredential(verificationId.value!!, code)
-            registerWithPhone(name =name , password = password, phone = phoneNumber, auth = Firebase.auth, onSuccess =onSuccess,credential =credential)
-            verificationId.value =null
+            registerWithPhone(
+                name = name,
+                password = password,
+                phone = phoneNumber,
+                auth = Firebase.auth,
+                onSuccess = onSuccess,
+                credential = credential
+            )
+            verificationId.value = null
             //signInWithPhoneAuthCredential(credential, Firebase.auth,onSuccess )
         }
     }
 
 
-    fun registerWithPhone(name:String,phone:String,password:String,auth:FirebaseAuth,onSuccess: () -> Unit,credential :PhoneAuthCredential){
+    fun registerWithPhone(
+        name: String,
+        phone: String,
+        password: String,
+        auth: FirebaseAuth,
+        onSuccess: () -> Unit,
+        credential: PhoneAuthCredential
+    ) {
         val db = Firebase.firestore
-        Log.d("codeeeeeeeee","register with phone")
+        Log.d("codeeeeeeeee", "register with phone")
 
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d("codeeeeeeeee","sign in with creditionals")
+                    Log.d("codeeeeeeeee", "sign in with creditionals")
 
                     // Success, navigate to the next screen
                     val user = task.result?.user
@@ -610,20 +750,18 @@ class MainViewModel @Inject constructor(
                         newUser
                     )
                         .addOnSuccessListener { document ->
-                            Log.d("codeeeeeeeee","adding user")
+                            Log.d("codeeeeeeeee", "adding user")
 
-                                Log.d("codeeeeeeeee","document exist")
+                            Log.d("codeeeeeeeee", "document exist")
 
-                                //val userData = document.data ?: emptyMap()
+                            //val userData = document.data ?: emptyMap()
 
-                                uidManager.setUId(userId)
-                                onSuccess()
+                            uidManager.setUId(userId)
+                            onSuccess()
                         }
                         .addOnFailureListener { e ->
 
                         }
-
-
 
 
                 } else {
@@ -633,7 +771,7 @@ class MainViewModel @Inject constructor(
             }
     }
 
-//    fun signInWithPhone(
+    //    fun signInWithPhone(
 //        email: String,
 //        password: String,
 //        onSuccess: () -> Unit,
@@ -714,8 +852,8 @@ class MainViewModel @Inject constructor(
                 }
             }
     }
-    val isEmailAuthorizationForRegister = MutableLiveData<Boolean>(true)
 
+    val isEmailAuthorizationForRegister = MutableLiveData<Boolean>(true)
 
 
     val isEmailAuthorizationForLogin = MutableLiveData<Boolean>(true)
@@ -758,14 +896,14 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun getMessagesOfOneRoom(doctorId: Int,onSuccess: (List<ChatMessageModel>) -> Unit ={}) {
+    fun getMessagesOfOneRoom(doctorId: Int, onSuccess: (List<ChatMessageModel>) -> Unit = {}) {
         val db = FirebaseFirestore.getInstance()
         val doctorsRef = db.collection("ChatMessage") // Ensure the collection name is correct
 
         doctorsRef
             .whereEqualTo("userUid", getUid())
             .whereEqualTo("doctorId", doctorId)
-           // .orderBy("time", Query.Direction.ASCENDING)
+            // .orderBy("time", Query.Direction.ASCENDING)
             .get()
             .addOnSuccessListener { querySnapshot: QuerySnapshot ->
 
@@ -788,7 +926,7 @@ class MainViewModel @Inject constructor(
 
                 messages.value = map
             }.addOnFailureListener {
-                Log.d("dsadasfadfasfdasdf","fail  ${it.message.toString()}")
+                Log.d("dsadasfadfasfdasdf", "fail  ${it.message.toString()}")
             }
     }
 
@@ -799,6 +937,7 @@ class MainViewModel @Inject constructor(
         val doctorsRef = db.collection("ChatRoom") // Ensure the collection name is correct
 
         doctorsRef
+            .whereEqualTo("userUid",getUid())
             .get()
             .addOnSuccessListener { querySnapshot: QuerySnapshot ->
 
@@ -832,14 +971,16 @@ class MainViewModel @Inject constructor(
         db.collection("ChatMessage").add(newMessage)
             .addOnSuccessListener {
 
-                getMessagesOfOneRoom(doctor_id, onSuccess = {messagesList ->
-                    if (messagesList.size==1) {
+                getMessagesOfOneRoom(doctor_id, onSuccess = { messagesList ->
+                    if (messagesList.size == 1) {
                         getDoctorById(doctor_id, onSuccess = {
                             createMessageRoom(
                                 doctor_id,
                                 doctorName = it.name,
                                 lastMessage = messagesList.last().message,
-                                lastMessageTime = messagesList.last().time
+                                lastMessageTime = messagesList.last().time,
+                                doctorImage =it.image,
+                                doctorNumber = it.number,
                             )
                         })
                     }
@@ -858,7 +999,9 @@ class MainViewModel @Inject constructor(
         doctorId: Int,
         lastMessage: String,
         lastMessageTime: String,
-        doctorName: String
+        doctorName: String,
+        doctorImage: String,
+        doctorNumber: String
     ) {
         val db = FirebaseFirestore.getInstance()
 
@@ -867,7 +1010,9 @@ class MainViewModel @Inject constructor(
             "lastMessage" to lastMessage,
             "lastMessageTime" to lastMessageTime,
             "userUid" to getUid(),
-            "doctorName" to doctorName
+            "doctorName" to doctorName,
+            "doctorImage" to doctorImage,
+            "doctorNumber" to doctorNumber
         )
 
         db.collection("ChatRoom").add(newRoom)
@@ -894,45 +1039,173 @@ class MainViewModel @Inject constructor(
                 val chatRoomList = querySnapshot.documents.mapNotNull {
                     it.toObject(ChatRoomModel::class.java)
                 }
-                Log.d("sdfsdfsadfsdfasdfsdf","succ ${chatRoomList} ")
+                Log.d("sdfsdfsadfsdfasdfsdf", "succ ${chatRoomList} ")
 
 
                 if (chatRoomList.firstOrNull() != null) {
                     currentChatRoom.value = chatRoomList.firstOrNull()!!
-                }else{
-                    Log.d("sdfsdfsadfsdfasdfsdf","fail buttt")
+                } else {
+                    Log.d("sdfsdfsadfsdfasdfsdf", "fail buttt")
 
                     getDoctorById(doctorId, onSuccess = {
-                        Log.d("sdfsdfsadfsdfasdfsdf","fail succcce")
+                        Log.d("sdfsdfsadfsdfasdfsdf", "fail succcce")
 
                         currentChatRoom.value = ChatRoomModel(
                             doctorId = doctorId,
                             doctorName = it.name,
                             userUid = getUid(),
-                            doctorNumber = it.number
+                            doctorNumber = it.number,
+                            doctorImage = it.image,
+                            lastMessage = "",
+                            lastMessageTime = ""
                         )
                     })
                 }
 
             }
             .addOnFailureListener {
-                Log.d("sdfsdfsadfsdfasdfsdf","fail buttt")
+                Log.d("sdfsdfsadfsdfasdfsdf", "fail buttt")
 
                 getDoctorById(doctorId, onSuccess = {
-                    Log.d("sdfsdfsadfsdfasdfsdf","fail succcce")
+                    Log.d("sdfsdfsadfsdfasdfsdf", "fail succcce")
 
                     currentChatRoom.value = ChatRoomModel(
                         doctorId = doctorId,
                         doctorName = it.name,
                         userUid = getUid(),
-                        doctorNumber = it.number
+                        doctorNumber = it.number,
+                        doctorImage = it.image,
+                        lastMessage = "",
+                        lastMessageTime = ""
                     )
                 })
             }
     }
 
+    fun createUser(auth: FirebaseAuth,name:String,email:String,onSuccess: () -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+
+        val userId = auth.currentUser?.uid ?: return
+
+        // Create a user object
+        val localUser = hashMapOf(
+            "uid" to userId,
+            "name" to name,
+            "email" to email,
+        )
 
 
+        uidManager.setUId(userId)
+
+
+        // Store user data in Firestore
+        db.collection("users").document(userId).set(localUser)
+            .addOnSuccessListener {
+                onSuccess()
+                //  onResult(true, "User registered and data saved")
+            }
+            .addOnFailureListener { e ->
+                //onResult(false, "Failed to save user data: ${e.message}")
+            }
+    }
+
+
+    fun addDocotor() {
+        val db = FirebaseFirestore.getInstance()
+
+        val newMessage = hashMapOf(
+            "description " to "Должность\n" +
+                    "Детский хирург, Детский андролог, Детский хирург-уролог\n" +
+                    "Квалификационная категория\n" +
+                    "Кандидат медицинских наук\n",
+            "distance" to "1753",
+            "hospitalId" to 0,
+            "id" to 3,
+            "image" to "image",
+            "name" to "Абдибеков Марэн Ибрагимович",
+            "number" to "+77784561234",
+            "price" to "2000",
+            "rating" to 3,
+
+            )
+
+        db.collection("doctor").add(newMessage)
+            .addOnSuccessListener {
+
+            }
+
+    }
+
+
+    fun addTimes() {
+        val db = FirebaseFirestore.getInstance()
+
+        val newMessage = hashMapOf(
+            "description " to "Должность\n" +
+                    "Детский хирург, Детский андролог, Детский хирург-уролог\n" +
+                    "Квалификационная категория\n" +
+                    "Кандидат медицинских наук\n",
+            "distance" to "1753",
+            "hospitalId" to 0,
+            "id" to 3,
+            "image" to "image",
+            "name" to "Абдибеков Марэн Ибрагимович",
+            "number" to "+77784561234",
+            "price" to "2000",
+            "rating" to 3,
+
+            )
+
+        db.collection("doctor").add(newMessage)
+            .addOnSuccessListener {
+
+            }
+
+    }
+
+
+    fun addAppointmentSlots() {
+        val db = FirebaseFirestore.getInstance()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val startHour = 13
+        val endHour = 17
+        var idCounter = 1
+
+        // Get today's and tomorrow's dates
+        val now = LocalDate.now()
+        val days = listOf(now, now.plusDays(1))
+
+        for (day in days) {
+            var hour =startHour
+            while (hour < endHour) {
+                val time = LocalDateTime.of(day, LocalTime.of(hour, 0))
+                val formattedTime = time.format(formatter)
+                Log.d("eedededededed",time.toString())
+                Log.d("eedededededed",formattedTime.toString())
+
+
+                val appointment = hashMapOf(
+                    "available" to true,
+                    "doctor_id" to 3,
+                    "id" to idCounter,
+                    "time" to formattedTime
+                )
+
+                db.collection("TimeSlot")
+                    .add(appointment)
+                    .addOnSuccessListener { documentReference ->
+                        Log.d("Firestore", "Added with ID: ${documentReference.id}")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("Firestore", "Error adding document", e)
+                    }
+
+                idCounter++
+
+                hour+=1
+            }
+        }
+    }
 
 }
 
@@ -954,7 +1227,7 @@ data class ScheduleFireBase(
 )
 
 data class TimeSlotFireBase(
-    val aviable: Boolean = false,
+    val available: Boolean = false,
     val doctor_id: Int = 0,
     val id: Int = 0,
     val time: String = "2025-10-30 14:30:45"

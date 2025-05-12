@@ -62,6 +62,7 @@ fun DoctorDetailsScreen(
     }
 
     Box(Modifier.fillMaxSize()) {
+
         Column(
             Modifier
                 .fillMaxSize()
@@ -162,7 +163,7 @@ fun DoctorDetailsScreen(
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                modifier = Modifier.padding(horizontal = 14.dp)
+                modifier = Modifier.padding(horizontal = 14.dp),
             ) {
                 itemsIndexed(listOfTimeSlots?.listOfDates ?: emptyList()) { index, item ->
                     TimeSlotGridItem(
@@ -204,10 +205,11 @@ fun DoctorDetailsScreen(
             Column(
                 Modifier
                     .background(colorResource(id = R.color.blue), RoundedCornerShape(32.dp))
+                    .clip(RoundedCornerShape(32.dp))
                     .weight(1f)
                     .clickable {
                         val selectedTimeToSend =
-                            selectedDate.value?.listOfDates?.get(selectedTImeSliteIndex.value)
+                            selectedDate.value?.listOfDates?.getOrNull(selectedTImeSliteIndex.value)
                         if (selectedTimeToSend != null) {
                             val date =
                                 selectedDate.value?.copy(listOfDates = listOf(selectedTimeToSend))
@@ -252,7 +254,7 @@ fun DoctorDetailsScreen(
 fun TimeSlotGridItem(item: TimeSlot, isSelected: Boolean, onSelect: () -> Unit) {
     Box(
         Modifier
-            .padding(horizontal = 6.dp)
+            .padding(horizontal = 6.dp, vertical = 6.dp)
 
             .background(
                 if (isSelected) {

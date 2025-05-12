@@ -3,6 +3,7 @@ package io.oitech.med_application.chatbot
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
+import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
@@ -31,7 +32,7 @@ class ChatActivity : AppCompatActivity() {
 
         loadChatHistory()
 
-        val userName = "Kalizhan"
+        val userName = "Beknur"
 
         if (!ChatbotGreetingManager.hasGreetedToday(this)) {
             val greeting = ChatbotGreetingManager.generateGreeting(userName)

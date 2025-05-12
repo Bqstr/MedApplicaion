@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.oitech.med_application.Color.ColorOfMessageInChat
@@ -76,6 +77,7 @@ fun ChatScreen(onBackPress: () -> Unit, chatRoomModel: ChatRoomModel, viewModel:
                 Space(26.dp)
 
                 Text(
+                    overflow = TextOverflow.Ellipsis,
                     fontFamily = Fonts.semiBaldFontInter,
                     text = chatRoomModel.doctorName,
                     fontSize = 16.sp,
@@ -117,7 +119,7 @@ fun ChatScreen(onBackPress: () -> Unit, chatRoomModel: ChatRoomModel, viewModel:
 
             Column(
                 Modifier
-                    .height(77.dp)
+                    .height(80.dp)
                     .align(Alignment.CenterHorizontally)
                     .border(
                         BorderStroke(1.dp, colorResource(id = R.color.strange_color)),
@@ -222,12 +224,15 @@ fun ChatScreen(onBackPress: () -> Unit, chatRoomModel: ChatRoomModel, viewModel:
 
                         )
                         .clickable {
-                            chatText.value =""
-                            viewModel.writeMessage(
-                                doctor_id = chatRoomModel.doctorId,
-                                message = chatText.value,
-                                isMyMessage = true
-                            )
+                            if(chatText.value.isNotBlank()) {
+                                viewModel.writeMessage(
+                                    doctor_id = chatRoomModel.doctorId,
+                                    message = chatText.value,
+                                    isMyMessage = true
+                                )
+                                chatText.value = ""
+                            }
+
                         }
                 ) {
 

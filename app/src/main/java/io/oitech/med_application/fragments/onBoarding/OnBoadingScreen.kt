@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnBoardingScreen(navigateToMainScreen: () -> Unit ) {
     Box(Modifier.fillMaxSize()) {
-        val pagerState = rememberPagerState(initialPage = 1) {
+        val pagerState = rememberPagerState(initialPage = 0) {
             2
         }
 
@@ -171,7 +171,7 @@ fun OnBoardingScreen(navigateToMainScreen: () -> Unit ) {
                                         .fillMaxWidth()
                                         .clickable {
                                             scope.launch{
-                                                pagerState.scrollToPage(1) // Moves directly to page index 1
+                                                pagerState.animateScrollToPage(1) // Moves directly to page index 1
                                             }
                                         }
                                         .background(
