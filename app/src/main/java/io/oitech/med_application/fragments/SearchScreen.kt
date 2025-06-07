@@ -3,6 +3,7 @@ package io.oitech.med_application.fragments
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,8 @@ import io.oitech.med_application.utils.ComposableUtils.Space
 import io.oitech.med_application.utils.Fonts
 import io.oitech.med_application.utils.Resource
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
+
 @Composable
 fun SearchScreen(
     navigateBack: () -> Unit,
@@ -78,21 +81,26 @@ fun SearchScreen(
 
         Space(10.dp)
         OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp),
             placeholder = {
                 Text(
                     fontSize = 14.sp,
-                    text = "Type here",
+                    text = "Search doctor, drugs, articles...",
                     color = colorResource(id = R.color.text_gray)
                 )
             },
             shape = RoundedCornerShape(30.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = io.oitech.med_application.Color.ColorScheduleWeakBlue,
-                focusedContainerColor = io.oitech.med_application.Color.ColorScheduleWeakBlue
-            ), value = searchText.value, onValueChange = {
-                searchText.value =it
-                viewModel.searchDoctors(searchText.value)
-            })
+                focusedBorderColor = colorResource(id = R.color.blue)
+            ),
+            value = searchText.value,
+            onValueChange = {
+                searchText.value = it
+                viewModel.searchchhhhDoc(searchText.value.toLowerCase())
+            },
+        )
 
         val doctors =viewModel.doctors.collectAsState()
 
@@ -122,6 +130,12 @@ fun SearchScreen(
                         val doctorList = (doctors.value as Resource.Success<List<HomeDoctorUiItem>>).data ?: emptyList()
                         items(doctorList) {
                             DoctorItemForDetails(doctor =it, withHorizontalPadding =true)
+                        }
+                    }
+                    else if(doctors.value is Resource.Loading){
+                        item() {
+                            CircularProgressIndicator(modifier =Modifier.padding(top =20.dp,start =20.dp))
+
                         }
                     }
                 }

@@ -1,11 +1,17 @@
 package io.oitech.med_application.fragments.doctor_details
 
+import android.content.res.Resources
+import android.util.Log
+import android.widget.Space
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,11 +22,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -49,9 +62,10 @@ import io.oitech.med_application.utils.Fonts
 fun DoctorDetailsScreen(
     doctor: HomeDoctorUiItem,
     navigateToAppointment: (HomeDoctorUiItem) -> Unit,
-    navigateBack: () -> Boolean,
+    navigateBack: () -> Unit,
     navigateToChat: (Int) -> Unit
 ) {
+    val context = LocalContext.current
     val appointmentInfo = remember {
         mutableStateOf<HomeDoctorUiItem?>(null)
     }
@@ -60,122 +74,135 @@ fun DoctorDetailsScreen(
     val selectedTImeSliteIndex = remember {
         mutableStateOf(-1)
     }
+    val scrollState = rememberScrollState()
 
     Box(Modifier.fillMaxSize()) {
 
-        Column(
-            Modifier
+        LazyColumn(
+            modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(Color.White),
+            contentPadding = PaddingValues(bottom = 16.dp)
         ) {
+            item {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp, top = 24.dp)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.arrow),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .clickable { navigateBack.invoke() }
+                    )
+                    Text(
+                        fontFamily = Fonts.semiBaldFontInter,
+                        text = "Doctor Detail",
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color.Black
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.more_button),
+                        contentDescription = null,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
+                }
+            }
 
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp, top = 24.dp)
-            )
-            {
-                Image(
-                    painter = painterResource(R.drawable.arrow),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(
-                            Alignment.CenterStart
-                        )
-                        .clickable {
-                            navigateBack.invoke()
-                        }
-                )
+            item {   Spacer(modifier =Modifier.height(34.dp)) }
+
+            item {
+                DoctorItemForDetails(doctor, withHorizontalPadding = true)
+            }
+
+            item { Spacer(modifier = Modifier.height(30.dp)) }
+
+            item {
                 Text(
                     fontFamily = Fonts.semiBaldFontInter,
-                    text = "Doctor Detail",
+                    text = "About",
                     fontSize = 16.sp,
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.Black
+                    color = Color.Black,
+                    modifier = Modifier.padding(start = 22.dp)
                 )
-                Image(
-                    painter = painterResource(R.drawable.more_button),
-                    contentDescription = null,
-                    modifier = Modifier.align(Alignment.CenterEnd)
+            }
+
+            item {
+                Text(
+                    fontFamily = Fonts.regularFontInter,
+                    lineHeight = 20.sp,
+                    text = doctor.description,
+                    fontSize = 12.sp,
+                    color = colorResource(id = R.color.doctor_discription_color),
+                    modifier = Modifier.padding(start = 22.dp)
                 )
-
-
-//
-
             }
-            Space(34.dp)
-            DoctorItemForDetails(doctor, withHorizontalPadding = true)
 
-            Spacer(modifier = Modifier.height(30.dp))
+            item {
+                Spacer(modifier =Modifier.height(30.dp))  }
 
-
-            Text(
-                fontFamily= Fonts.semiBaldFontInter,
-
-                text = "About",
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(start = 22.dp)
-            )
-            Text(
-                fontFamily= Fonts.regularFontInter,
-
-                lineHeight = 20.sp,
-                text = doctor.description,
-                fontSize = 12.sp,
-                color = colorResource(id = R.color.doctor_discription_color),
-                modifier = Modifier.padding(start = 22.dp)
-            )
-
-
-
-            Space(30.dp)
-
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(doctor.listOfTimes.size) { dateNum ->
-                    SelectedDateSlot(
-                        doctor.listOfTimes[dateNum],
-                        selectedDate.value == doctor.listOfTimes[dateNum],
-                        onSelect = {
-                            selectedTImeSliteIndex.value = -1
-                            selectedDate.value = doctor.listOfTimes[dateNum]
-                        }
-                    )
-                }
-            }
-            Space(30.dp)
-
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .padding(horizontal = 20.dp)
-                    .background(
-                        colorResource(id = R.color.line_color)
-                    )
-            )
-            Space(30.dp)
-
-
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier.padding(horizontal = 14.dp),
-            ) {
-                itemsIndexed(listOfTimeSlots?.listOfDates ?: emptyList()) { index, item ->
-                    TimeSlotGridItem(
-                        item = item,
-                        isSelected = selectedTImeSliteIndex.value == index,
-                        onSelect = {
-                            selectedTImeSliteIndex.value = index
-                        })
+            item {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(doctor.listOfTimes.size) { dateNum ->
+                        SelectedDateSlot(
+                            doctor.listOfTimes[dateNum],
+                            selectedDate.value == doctor.listOfTimes[dateNum],
+                            onSelect = {
+                                selectedTImeSliteIndex.value = -1
+                                selectedDate.value = doctor.listOfTimes[dateNum]
+                            }
+                        )
+                    }
                 }
             }
 
+            item {  Spacer(modifier =Modifier.height(30.dp))  }
+
+            item {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .padding(horizontal = 20.dp)
+                        .background(colorResource(id = R.color.line_color))
+                )
+            }
+
+            item {  Spacer(modifier =Modifier.height(30.dp)) }
+
+            item {
+                LazyHorizontalGrid(
+                    rows = GridCells.Fixed(3),
+                    modifier = Modifier
+                        .height(142.dp)
+                        .padding(horizontal = 14.dp)
+                        .fillMaxWidth(), // Important to limit its width
+                ) {
+                    itemsIndexed(listOfTimeSlots?.listOfDates ?: emptyList()) { index, item ->
+                        Log.d("asdfasdfdfrfrfrfrfrfr",item.toString())
+
+                        TimeSlotGridItem(
+                            item = item,
+                            isSelected = selectedTImeSliteIndex.value == index,
+                            onSelect = {
+                                selectedTImeSliteIndex.value = index
+                            }
+                        )
+                    }
+                }
+            }
+
+            item{
+                Spacer(modifier =Modifier.height(60.dp))
+            }
         }
+
         Row(
             Modifier
                 .fillMaxWidth()
@@ -252,8 +279,14 @@ fun DoctorDetailsScreen(
 
 @Composable
 fun TimeSlotGridItem(item: TimeSlot, isSelected: Boolean, onSelect: () -> Unit) {
+    val displayMetrics = Resources.getSystem().displayMetrics
+    val screenWidthDp = (displayMetrics.widthPixels / displayMetrics.density) -28
+    val itemWidth = (screenWidthDp/3)
+    Log.d("safasdfasdfasfdasfdsafd","${itemWidth.toString()}     ${ screenWidthDp}")
+
     Box(
         Modifier
+            .width(itemWidth.dp)
             .padding(horizontal = 6.dp, vertical = 6.dp)
 
             .background(
@@ -262,6 +295,9 @@ fun TimeSlotGridItem(item: TimeSlot, isSelected: Boolean, onSelect: () -> Unit) 
                 } else {
                     Color.White
                 }, RoundedCornerShape(16.dp)
+            )
+            .clip(
+                RoundedCornerShape(16.dp)
             )
             .border(
                 BorderStroke(
@@ -292,6 +328,39 @@ fun TimeSlotGridItem(item: TimeSlot, isSelected: Boolean, onSelect: () -> Unit) 
         )
     }
 }
+
+
+
+
+//@Composable
+//fun griddd(){
+//    val pagerState = rememberPagerState {
+//        9
+//    }
+//    HorizontalPager(state = pagerState) {
+//        Column {
+//
+//
+//            Row(Modifier.fillMaxWidth()) {
+//                TimeSlotGridItem()
+//                TimeSlotGridItem()
+//                TimeSlotGridItem()
+//            }
+//            Row(Modifier.fillMaxWidth()) {
+//                TimeSlotGridItem()
+//                TimeSlotGridItem()
+//                TimeSlotGridItem()
+//            }
+//            Row(Modifier.fillMaxWidth()) {
+//                TimeSlotGridItem()
+//                TimeSlotGridItem()
+//                TimeSlotGridItem()
+//            }
+//        }
+//    }
+//}
+
+
 
 @Composable
 fun SelectedDateSlot(dateOfTheWeek: DateOfTheWeek, selected: Boolean, onSelect: () -> Unit) {

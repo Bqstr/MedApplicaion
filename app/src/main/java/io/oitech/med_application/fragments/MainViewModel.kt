@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -63,6 +64,8 @@ class MainViewModel @Inject constructor(
 
     val doctors = MutableLiveData<Resource<List<HomeDoctorUiItem>>>(Resource.Unspecified())
 
+    val doctorsLiveData  =doctors.asFlow().asLiveData()
+
     val firstLaunch = MutableStateFlow<Boolean>(false)
 
 
@@ -89,15 +92,15 @@ class MainViewModel @Inject constructor(
         val doctorsRef = db.collection("doctor") // Ensure the collection name is correct
         val timeSlot = db.collection("TimeSlot") // Ensure the collection name is correct
 
+        doctors.value = Resource.Loading()
 
         doctorsRef
             .get()
             .addOnSuccessListener { querySnapshot: QuerySnapshot ->
-
-
                 val doctorsList = querySnapshot.documents.mapNotNull {
                     it.toObject(HomeDoctorUiItemWithout::class.java)
                 }
+                Log.d("frfrfrfrfrfrfrfrf",doctorsList.toString())
                 doctors.value = Resource.Loading()
                 timeSlot
                     .get()
@@ -137,21 +140,25 @@ class MainViewModel @Inject constructor(
                                         DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
 
 
-                                    listOfDates.add(DateOfTheWeek(
+                                    val listtss =value.map {
+                                        val dateTimeForEachSlot = LocalDateTime.parse(it.time, formatter)
+                                        val formattedTimeForEachSlot  =dateTimeForEachSlot.format(outputFormatter)
+                                        Log.d("asfasdfasdfasfdd", "${it}     ${it.time}")
+                                        TimeSlot(
+                                            time = formattedTimeForEachSlot,
+                                            dateTime = it.time,
+                                            available = it.available
+                                        )
+                                    }.sortedBy { it.time }
+
+                                    Log.d("asdfasdfasdfrfrfrfrfrf",listtss.toString())
+                                    listOfDates.add(
+
+                                        DateOfTheWeek(
                                         dateTime = fullTime,
                                         dateName = dayName,
                                         dateNumber = dayOfMonth,
-                                        listOfDates = value.map {
-                                            val time = dateTime.format(outputFormatter)
-                                            Log.d("asfasdfasdfasfdd", "${time}     ${it.time}")
-                                            TimeSlot(
-                                                time = time,
-                                                dateTime = it.time,
-                                                available = it.available
-
-
-                                            )
-                                        }
+                                        listOfDates = listtss
 
                                     )
                                     )
@@ -227,7 +234,10 @@ class MainViewModel @Inject constructor(
 
 
                     }
+                    .addOnFailureListener{e ->
+                        doctors.value = Resource.Failure(e.message.toString())
 
+                    }
 
 
 
@@ -238,11 +248,8 @@ class MainViewModel @Inject constructor(
             }
             .addOnFailureListener { e ->
                 doctors.value = Resource.Failure(e.message.toString())
-
                 Log.d("sadfasdfasdfasdf", "${e.message}")
             }
-
-
     }
 
     fun getDoctorById(doctorId: Int, onSuccess: (HomeDoctorUiItem) -> Unit) {
@@ -1110,23 +1117,31 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun addDocotor() {
+    fun addDocotor(
+         name:String,
+         description:String,
+         hospitalId :Int,
+        id:Int,
+         image:String,
+         number:String,
+         price:String,
+         rating:Int,
+         distance:String
+
+    ) {
         val db = FirebaseFirestore.getInstance()
 
         val newMessage = hashMapOf(
-            "description " to "Должность\n" +
-                    "Детский хирург, Детский андролог, Детский хирург-уролог\n" +
-                    "Квалификационная категория\n" +
-                    "Кандидат медицинских наук\n",
-            "distance" to "1753",
-            "hospitalId" to 0,
-            "id" to 3,
-            "image" to "image",
-            "name" to "Абдибеков Марэн Ибрагимович",
-            "number" to "+77784561234",
-            "price" to "2000",
-            "rating" to 3,
-
+            "description " to description,
+            "distance" to distance,
+            "hospitalId" to hospitalId,
+            "id" to id,
+            "image" to image,
+            "name" to name,
+            "number" to number,
+            "price" to price,
+            "rating" to rating,
+            "nameLowercase" to name.lowercase()
             )
 
         db.collection("doctor").add(newMessage)
@@ -1164,7 +1179,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun addAppointmentSlots() {
+    fun addAppointmentSlots(doctorId:Int) {
         val db = FirebaseFirestore.getInstance()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val startHour = 13
@@ -1186,7 +1201,7 @@ class MainViewModel @Inject constructor(
 
                 val appointment = hashMapOf(
                     "available" to true,
-                    "doctor_id" to 3,
+                    "doctor_id" to doctorId,
                     "id" to idCounter,
                     "time" to formattedTime
                 )

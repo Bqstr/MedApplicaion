@@ -3,15 +3,17 @@ package io.oitech.med_application.fragments.homeFragment
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +36,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class HomeFragment : Fragment(),OnItemClickListener {
+class HomeFragment : Fragment(), OnItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -59,14 +61,19 @@ class HomeFragment : Fragment(),OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController =findNavController()
+        val homeDoctorsLoading = view.findViewById<ProgressBar>(R.id.home_doctorsLoading)
+
+        val navController = findNavController()
 
         val recyclerView: RecyclerView = view.findViewById(R.id.home_doctors_recuclerView)
 
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
 
-        val adapter =HomeDoctorsAdapters(emptyList(),this,requireContext())
+
+        recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        val adapter = HomeDoctorsAdapters(emptyList(), this, requireContext())
 
         recyclerView.adapter = adapter
 
@@ -74,36 +81,64 @@ class HomeFragment : Fragment(),OnItemClickListener {
         recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50))
 
 
-        view.findViewById<TextView>(R.id.see_all_text).setOnClickListener{
+        view.findViewById<TextView>(R.id.see_all_text).setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_doctorsListFragment2)
         }
-        view.findViewById<LinearLayout>(R.id.doctor_home_button).setOnClickListener{
+        view.findViewById<LinearLayout>(R.id.doctor_home_button).setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_mapFragment)
         }
-        view.findViewById<LinearLayout>(R.id.ai_button_home).setOnClickListener{
+        view.findViewById<LinearLayout>(R.id.ai_button_home).setOnClickListener {
             val intent = Intent(requireContext(), ChatActivity::class.java)
             startActivity(intent)
 
         }
-        view.findViewById<LinearLayout>(R.id.hospital_home).setOnClickListener{
+        view.findViewById<LinearLayout>(R.id.hospital_home).setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_hospitalsFragment)
         }
 
-        view.findViewById<LinearLayout>(R.id.map_home).setOnClickListener{
+        view.findViewById<LinearLayout>(R.id.map_home).setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_mapFragment)
+        }
+
+        view.findViewById<EditText>(R.id.textView_in_homeScreen).setOnClickListener {
+            navController.navigate(R.id.action_homeFragment_to_searchFragment)
         }
 
         viewModel.getAllDoctors()
         viewModel.doctors.observe(viewLifecycleOwner) { newList ->
-            if(newList is Resource.Success ) {
-                if(newList.data !=null) {
-                    adapter.updateList(newList.data)
+            when (newList) {
+                is Resource.Success -> {
+                    homeDoctorsLoading.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                    if (newList.data != null) {
+                        adapter.updateList(newList.data)
+                    }
+                }
+
+                is Resource.Loading -> {
+                    homeDoctorsLoading.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                }
+
+                else -> {
+                    homeDoctorsLoading.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
                 }
             }
-        }
-            //viewModel.addDocotor()
-        viewModel.addAppointmentSlots()
 
+        }
+//            viewModel.addDocotor(
+//                name ="Адилова Сауле Каиржановна",
+//                description = "desss mannnnnnn",
+//                distance = "2000",
+//                hospitalId = 1,
+//                image = "pediator_rakhat.jpg",
+//                id = 4,
+//                number = "+77784446401",
+//                price = "2000",
+//                rating = 4
+//            )
+        //viewModel.addAppointmentSlots(1)
 
 
     }
@@ -114,11 +149,10 @@ class HomeFragment : Fragment(),OnItemClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val navController =findNavController()
+        val navController = findNavController()
         return when (item.itemId) {
             else -> super.onOptionsItemSelected(item)
         }
-
 
 
     }
@@ -144,9 +178,12 @@ class HomeFragment : Fragment(),OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        Log.d("asdfasdfasdfasdfasdf","here")
-        if(viewModel.doctors.value is Resource.Success) {
-            val doctor = (viewModel.doctors.value as Resource.Success<List<HomeDoctorUiItem>>).data?.get(position)
+        Log.d("asdfasdfasdfasdfasdf", "here")
+        if (viewModel.doctors.value is Resource.Success) {
+            val doctor =
+                (viewModel.doctors.value as Resource.Success<List<HomeDoctorUiItem>>).data?.get(
+                    position
+                )
 
             val bundle = Bundle()
             bundle.putParcelable("doctorDetails", doctor)

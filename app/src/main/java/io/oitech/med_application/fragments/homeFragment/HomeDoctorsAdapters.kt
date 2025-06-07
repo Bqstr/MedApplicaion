@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,7 +15,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import io.oitech.med_application.R
@@ -184,10 +182,11 @@ data class HomeDoctorUiItemWithout(
     val rating: Double = 5.0,
     val description: String = "skibi di doooooop",
     val hospitalId:Int =0,
-    val price:String =""
+    val price:String ="",
+    val nameLowercase:String ="",
+    val number:String =""
 ) {
-    constructor() : this(0, "", "", "", "0", 1.0, "skibi di doooooop",0,"0")
-
+    constructor() : this(0, "", "", "", "0", 1.0, "skibi di doooooop",0,"0","")
 }
 
 

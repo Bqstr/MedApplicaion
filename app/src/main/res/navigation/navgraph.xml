@@ -70,6 +70,9 @@
         <action
             android:id="@+id/action_homeFragment_to_hospitalsFragment"
             app:destination="@id/hospitalsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/numberVerificationFragment"
@@ -94,7 +97,11 @@
         android:id="@+id/doctorsListFragment"
         android:name="io.oitech.med_application.fragments.doctor_list.DoctorsListFragment"
         android:label="fragment_doctors_list"
-        tools:layout="@layout/fragment_doctors_list" />
+        tools:layout="@layout/fragment_doctors_list" >
+        <action
+            android:id="@+id/action_doctorsListFragment_to_doctorDetailFragment"
+            app:destination="@id/doctorDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/doctorDetailFragment"
         android:name="io.oitech.med_application.fragments.doctor_details.DoctorDetailFragment"
@@ -156,4 +163,9 @@
         android:name="io.oitech.med_application.fragments.hospitalList.HospitalsFragment"
         android:label="fragment_hospitals"
         tools:layout="@layout/fragment_hospitals" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="io.oitech.med_application.fragments.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
 </navigation>

@@ -15,6 +15,7 @@ import io.oitech.med_application.fragments.SearchScreen
 import io.oitech.med_application.fragments.SearchViewModel
 import io.oitech.med_application.fragments.chat.ChatFragment
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
+import java.io.IOException
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,23 +71,20 @@ class DoctorDetailFragment : Fragment() {
             }
             findNavController().navigate(R.id.action_doctorDetailFragment_to_chatFragment2, bundle)
         }
-
-
+        
 
         composeView.setContent {
             if (doctor != null) {
-//                DoctorDetailsScreen(doctor = doctor,navigateToAppointment,navigateBack =navigateBack, navigateToChat = {
-//                    navigateToChatToDoctor.invoke(it)
-//                })
-                SearchScreen(
-                    navigateBack = navigateBack,
-                    navigateToDoctor = {},
-                    navigateToDrugDetail = {},
-                    viewModel = searchViewModel
-                )
+                DoctorDetailsScreen(doctor = doctor,navigateToAppointment,navigateBack =navigateBack, navigateToChat = {
+                    navigateToChatToDoctor.invoke(it)
+                })
+//
             }
         }
     }
+
+
+
 
     companion object {
         fun newInstance(doctorId: Int): ChatFragment {
