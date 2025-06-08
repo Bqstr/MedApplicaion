@@ -3,14 +3,15 @@ package io.oitech.med_application.fragments
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -29,12 +30,11 @@ import androidx.compose.ui.unit.sp
 import io.oitech.med_application.R
 import io.oitech.med_application.fragments.doctor_details.DoctorItemForDetails
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
-import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItemWithout
+import io.oitech.med_application.fragments.hospitalList.HospitalListItemCompose
+import io.oitech.med_application.fragments.hospitalList.HospitalModel
 import io.oitech.med_application.utils.ComposableUtils.Space
 import io.oitech.med_application.utils.Fonts
 import io.oitech.med_application.utils.Resource
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun SearchScreen(
@@ -45,7 +45,7 @@ fun SearchScreen(
 ) {
 
 
-    val searchText =remember{ mutableStateOf("")}
+    val searchText = remember { mutableStateOf("") }
     Column {
         Box(
             Modifier
@@ -98,51 +98,110 @@ fun SearchScreen(
             value = searchText.value,
             onValueChange = {
                 searchText.value = it
-                viewModel.searchchhhhDoc(searchText.value.toLowerCase())
+                viewModel.searchchhhhDoc(searchText.value.lowercase(java.util.Locale.getDefault()))
+                viewModel.searchHospitals(searchText.value.lowercase(java.util.Locale.getDefault()))
             },
         )
 
-        val doctors =viewModel.doctors.collectAsState()
+        val doctors = viewModel.doctors.collectAsState()
+        val hospitals = viewModel.hospitals.collectAsState()
 
         LaunchedEffect(doctors.value) {
-            Log.d("asdfasdfasdfasdfasfd",doctors.value.toString())
+            Log.d("asdfasdfasdfasdfasfd", doctors.value.toString())
         }
 
 
 
         LazyColumn {
             item {
-                //doctors
-                LazyRow(Modifier.fillMaxWidth()){
+                Column() {
 
+
+                    //doctors
+                        if (doctors.value is Resource.Success ) {
+                            val doctorList =
+                                (doctors.value as Resource.Success<List<HomeDoctorUiItem>>).data
+                                    ?: emptyList()
+                            if(doctorList.isNotEmpty()) {
+                                Text(
+                                    text = "Doctors",
+                                    fontSize = 14.sp,
+                                    fontFamily = Fonts.baldFontInter,
+                                    modifier = Modifier.padding(
+                                        start = 10.dp,
+                                        top = 10.dp,
+                                        bottom = 10.dp
+                                    )
+                                )
+                                LazyRow(Modifier.fillMaxWidth()) {
+
+                                    items(doctorList) {
+                                        DoctorItemForDetails(
+                                            doctor = it,
+                                            withHorizontalPadding = true
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        else if (doctors.value is Resource.Loading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.padding(
+                                        top = 20.dp,
+                                        start = 20.dp
+                                    )
+                                )
+                        }
+
+                    Space(10.dp)
                 }
+
+
             }
             item {
                 //Drugs
-                LazyRow(Modifier.fillMaxWidth()){
+                LazyRow(Modifier.fillMaxWidth()) {
 
                 }
             }
             item {
-                //hospitals
-                LazyRow (Modifier.fillMaxWidth()){
-                    if(doctors.value is Resource.Success) {
-                        val doctorList = (doctors.value as Resource.Success<List<HomeDoctorUiItem>>).data ?: emptyList()
-                        items(doctorList) {
-                            DoctorItemForDetails(doctor =it, withHorizontalPadding =true)
-                        }
-                    }
-                    else if(doctors.value is Resource.Loading){
-                        item() {
-                            CircularProgressIndicator(modifier =Modifier.padding(top =20.dp,start =20.dp))
+                Column() {
 
+                    //hospitals
+                    if (hospitals.value is Resource.Success) {
+                        val hospitalList =
+                            (hospitals.value as Resource.Success<List<HospitalModel>>).data
+                                ?: emptyList()
+                        if(hospitalList.isNotEmpty()) {
+                            Text(
+                                text = "Hospitals",
+                                fontSize = 14.sp,
+                                fontFamily = Fonts.baldFontInter,
+                                modifier = Modifier.padding(
+                                    start = 10.dp,
+                                    top = 10.dp,
+                                    bottom = 10.dp
+                                )
+                            )
+                            LazyRow(Modifier.fillMaxWidth()) {
+                                items(hospitalList) {
+                                    HospitalListItemCompose(it)
+                                }
+                            }
                         }
+                    } else if (hospitals.value is Resource.Loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.padding(
+                                top = 30.dp,
+                                start = 20.dp
+                            )
+                        )
                     }
+
                 }
             }
         }
-
-
-
     }
+
+
 }

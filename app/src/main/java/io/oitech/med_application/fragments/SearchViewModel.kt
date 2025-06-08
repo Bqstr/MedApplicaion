@@ -6,12 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.toObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.oitech.med_application.fragments.homeFragment.DateOfTheWeek
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItem
 import io.oitech.med_application.fragments.homeFragment.HomeDoctorUiItemWithout
 import io.oitech.med_application.fragments.homeFragment.TimeSlot
+import io.oitech.med_application.fragments.hospitalList.HospitalModel
 import io.oitech.med_application.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,35 +28,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject() constructor() : ViewModel() {
+    val hospitals = MutableStateFlow<Resource<List<HospitalModel>>>(Resource.Unspecified())
     val searchText = MutableStateFlow<String>("")
 
 
-    var searchJob: Job? = null
+
+    var doctorSearchJob: Job? = null
+    var hospitalSearchJob: Job? = null
+
+
 
 
     val doctors = MutableStateFlow<Resource<List<HomeDoctorUiItem>>>(Resource.Unspecified())
 
-    fun searchDoctors(searchText: String,) {
+    fun searchDoctors(searchText: String) {
 
-        searchJob?.cancel()
-        if(searchText.isBlank()){
-            doctors.value =Resource.Success(emptyList())
+        doctorSearchJob?.cancel()
+        if (searchText.isBlank()) {
+            doctors.value = Resource.Success(emptyList())
             return
         }
-        searchJob = viewModelScope.launch {
+        doctorSearchJob = viewModelScope.launch {
 
             try {
 
 
-
-
-
-
-
-
-                doctors.value =Resource.Loading()
+                doctors.value = Resource.Loading()
                 val db = FirebaseFirestore.getInstance()
-
 
 
                 val job2 = async {
@@ -67,8 +65,6 @@ class SearchViewModel @Inject() constructor() : ViewModel() {
                         .await()
                     snapshot.documents.mapNotNull { it.toObject(HomeDoctorUiItemWithout::class.java) }
                 }
-
-
 
 
                 val timeSlot =
@@ -86,7 +82,7 @@ class SearchViewModel @Inject() constructor() : ViewModel() {
                                 val doctorsList =
                                     documents.mapNotNull { it.toObject(HomeDoctorUiItemWithout::class.java) }
 
-                                Log.d("sdfdsfrfrfrfrfrfrff",doctorsList.size.toString())
+                                Log.d("sdfdsfrfrfrfrfrfrff", doctorsList.size.toString())
                                 timeSlot
                                     .get()
                                     .addOnSuccessListener { timeSlotSnapshot: QuerySnapshot ->
@@ -139,7 +135,9 @@ class SearchViewModel @Inject() constructor() : ViewModel() {
                                                         dateNumber = dayOfMonth,
                                                         listOfDates = value.map {
                                                             val time =
-                                                                dateTime.format(outputFormatter)
+                                                                dateTime.format(
+                                                                    outputFormatter
+                                                                )
                                                             Log.d(
                                                                 "asfasdfasdfasfdd",
                                                                 "${time}     ${it.time}"
@@ -199,16 +197,15 @@ class SearchViewModel @Inject() constructor() : ViewModel() {
     }
 
 
+    fun searchchhhhDoc(searchText: String) {
 
-    fun searchchhhhDoc(searchText:String){
-
-        searchJob?.cancel()
-        if(searchText.isBlank()){
-            doctors.value =Resource.Success(emptyList())
+        doctorSearchJob?.cancel()
+        if (searchText.isBlank()) {
+            doctors.value = Resource.Success(emptyList())
             return
         }
-        searchJob =viewModelScope.launch(Dispatchers.IO) {
-            doctors.value =Resource.Loading()
+        doctorSearchJob = viewModelScope.launch(Dispatchers.IO) {
+            doctors.value = Resource.Loading()
             val db = FirebaseFirestore.getInstance()
 
 
@@ -221,7 +218,7 @@ class SearchViewModel @Inject() constructor() : ViewModel() {
                     .await()
                     .mapNotNull { it.toObject(HomeDoctorUiItemWithout::class.java) }
             }
-            val doctorsBySpeciality =  async {
+            val doctorsBySpeciality = async {
                 db.collection("doctor")
                     .orderBy("speciality")
                     .startAt(searchText)
@@ -231,25 +228,32 @@ class SearchViewModel @Inject() constructor() : ViewModel() {
                     .mapNotNull { it.toObject(HomeDoctorUiItemWithout::class.java) }
             }
 
-            val timeHere =async {
+            val timeHere = async {
                 db.collection("TimeSlot")
                     .get()
                     .await()
                     .mapNotNull { it.toObject(TimeSlotFireBase::class.java) }
             }
 
-            val (doctorsByNameRes,doctorsBySpecRes,time) = awaitAll(doctorsByName,doctorsBySpeciality,timeHere)
+            val (doctorsByNameRes, doctorsBySpecRes, time) = awaitAll(
+                doctorsByName,
+                doctorsBySpeciality,
+                timeHere
+            )
 
-            val realDocByName =doctorsByNameRes as List<HomeDoctorUiItemWithout>
-            val realDocBySpce =doctorsBySpecRes as List<HomeDoctorUiItemWithout>
-            val realTime =time as List<TimeSlotFireBase>?
+            val realDocByName = doctorsByNameRes as List<HomeDoctorUiItemWithout>
+            val realDocBySpce = doctorsBySpecRes as List<HomeDoctorUiItemWithout>
+            val realTime = time as List<TimeSlotFireBase>?
 
 
-            val allDocs =realDocByName+realDocBySpce
+            val allDocs = realDocByName + realDocBySpce
 
 
-            Log.d("sfaddfasdfasdfasdf","${realDocByName.size}   ${realDocBySpce.size}  ${searchText}")
-            doctors.value =Resource.Success(allDocs.map { doctor ->
+            Log.d(
+                "sfaddfasdfasdfasdf",
+                "${realDocByName.size}   ${realDocBySpce.size}  ${searchText}"
+            )
+            doctors.value = Resource.Success(allDocs.map { doctor ->
 
                 val myMap =
                     realTime?.filter { it.doctor_id == doctor.id }
@@ -332,4 +336,34 @@ class SearchViewModel @Inject() constructor() : ViewModel() {
         }
     }
 
+
+    fun searchHospitals(searchText: String) {
+        hospitalSearchJob?.cancel()
+        if(searchText.isBlank() || searchText.isEmpty()){
+            hospitals.value =Resource.Success(emptyList())
+
+        }
+        else {
+            hospitalSearchJob = viewModelScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+                val scheduleRef = db.collection("Hospital") // Ensure the collection name is correct
+                scheduleRef
+                    .orderBy("nameLowercase")
+                    .startAt(searchText)
+                    .endAt(searchText + "\uf8ff")
+                    .get()
+
+                    .addOnSuccessListener { querySnapshot: QuerySnapshot ->
+                        val hospitalList = querySnapshot.documents.mapNotNull {
+                            it.toObject(HospitalModel::class.java)
+                        }
+                        hospitals.value = Resource.Success(hospitalList)
+
+                    }.addOnFailureListener {
+                        hospitals.value = Resource.Failure(it.message.toString())
+
+                    }
+            }
+        }
+    }
 }

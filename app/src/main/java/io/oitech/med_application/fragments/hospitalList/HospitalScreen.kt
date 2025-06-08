@@ -199,6 +199,7 @@ fun HospitalListItemCompose(hospital: HospitalModel) {
 }
 
 data class HospitalModel(
+    val nameLowercase :String,
     val distance: String = "",
     val image: String = "",
     val name: String = "",
