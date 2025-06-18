@@ -166,9 +166,9 @@ data class HomeDoctorUiItem(
     val description: String = "skibi di doooooop",
     val listOfTimes: List<DateOfTheWeek> = emptyList(),
     val number :String ="",
-
     val hospitalId:Int,
-    val price:String
+    val price:String,
+    val isSaved:Boolean
 ) : Parcelable {
 }
 

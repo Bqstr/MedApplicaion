@@ -163,10 +163,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
-
-
-
     }
 
     var myNavController: NavController? = null

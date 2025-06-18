@@ -20,4 +20,32 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="back_color_of_login_textField">#F9FAFB</color>
 
+
+
+
+
+
+
+
+
+    <color name="primary">#6750A4</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="background">#FFFBFE</color>
+    <color name="on_background">#1C1B1F</color>
+    <color name="surface">#FFFBFE</color>
+    <color name="on_surface">#1C1B1F</color>
+    <color name="outline">#79747E</color>
+
+    <!-- You can also define semantic names -->
+    <color name="text_primary">#1C1B1F</color>
+    <color name="text_secondary">#49454F</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Custom colors for your app -->
+    <color name="save_icon_color">#199A8E</color>
+
+
+
+
+
 </resources>

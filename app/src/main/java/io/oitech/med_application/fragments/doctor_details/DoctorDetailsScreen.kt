@@ -2,16 +2,13 @@ package io.oitech.med_application.fragments.doctor_details
 
 import android.content.res.Resources
 import android.util.Log
-import android.widget.Space
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,13 +23,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -63,8 +58,15 @@ fun DoctorDetailsScreen(
     doctor: HomeDoctorUiItem,
     navigateToAppointment: (HomeDoctorUiItem) -> Unit,
     navigateBack: () -> Unit,
-    navigateToChat: (Int) -> Unit
+    navigateToChat: (Int) -> Unit,
+    setFavoriteDoctor: (Boolean) -> Unit
 ) {
+    val idDoctorSaved = remember { mutableStateOf(doctor.isSaved) }
+
+    BackHandler {
+        navigateBack.invoke()
+        setFavoriteDoctor(idDoctorSaved.value)
+    }
     val context = LocalContext.current
     val appointmentInfo = remember {
         mutableStateOf<HomeDoctorUiItem?>(null)
@@ -95,7 +97,10 @@ fun DoctorDetailsScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .align(Alignment.CenterStart)
-                            .clickable { navigateBack.invoke() }
+                            .clickable {
+                                navigateBack.invoke()
+                                setFavoriteDoctor(idDoctorSaved.value)
+                            }
                     )
                     Text(
                         fontFamily = Fonts.semiBaldFontInter,
@@ -104,15 +109,45 @@ fun DoctorDetailsScreen(
                         modifier = Modifier.align(Alignment.Center),
                         color = Color.Black
                     )
-                    Image(
-                        painter = painterResource(R.drawable.more_button),
-                        contentDescription = null,
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                    )
+                    Row(modifier = Modifier.align(Alignment.CenterEnd)) {
+
+                        Icon(
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            painter = painterResource(R.drawable.more_button),
+                            contentDescription = null,
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
+                        Space(10.dp)
+                        if (idDoctorSaved.value) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.selected_heart),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .clickable {
+                                        idDoctorSaved.value = false
+
+                                    }
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(id = R.drawable.heart_prifile_item),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .clickable {
+                                        idDoctorSaved.value = true
+
+                                    }
+                            )
+
+                        }
+                    }
+
                 }
             }
 
-            item {   Spacer(modifier =Modifier.height(34.dp)) }
+            item { Spacer(modifier = Modifier.height(34.dp)) }
 
             item {
                 DoctorItemForDetails(doctor, withHorizontalPadding = true)
@@ -142,7 +177,8 @@ fun DoctorDetailsScreen(
             }
 
             item {
-                Spacer(modifier =Modifier.height(30.dp))  }
+                Spacer(modifier = Modifier.height(30.dp))
+            }
 
             item {
                 LazyRow(
@@ -162,7 +198,7 @@ fun DoctorDetailsScreen(
                 }
             }
 
-            item {  Spacer(modifier =Modifier.height(30.dp))  }
+            item { Spacer(modifier = Modifier.height(30.dp)) }
 
             item {
                 Box(
@@ -174,7 +210,7 @@ fun DoctorDetailsScreen(
                 )
             }
 
-            item {  Spacer(modifier =Modifier.height(30.dp)) }
+            item { Spacer(modifier = Modifier.height(30.dp)) }
 
             item {
                 LazyHorizontalGrid(
@@ -185,7 +221,7 @@ fun DoctorDetailsScreen(
                         .fillMaxWidth(), // Important to limit its width
                 ) {
                     itemsIndexed(listOfTimeSlots?.listOfDates ?: emptyList()) { index, item ->
-                        Log.d("asdfasdfdfrfrfrfrfrfr",item.toString())
+                        Log.d("asdfasdfdfrfrfrfrfrfr", item.toString())
 
                         TimeSlotGridItem(
                             item = item,
@@ -198,8 +234,8 @@ fun DoctorDetailsScreen(
                 }
             }
 
-            item{
-                Spacer(modifier =Modifier.height(60.dp))
+            item {
+                Spacer(modifier = Modifier.height(60.dp))
             }
         }
 
@@ -214,6 +250,8 @@ fun DoctorDetailsScreen(
                     .size(50.dp)
                     .clickable {
                         navigateToChat(doctor.id)
+                        setFavoriteDoctor(idDoctorSaved.value)
+
                     }
                     .background(
                         colorResource(id = R.color.strange_color),
@@ -252,10 +290,13 @@ fun DoctorDetailsScreen(
                                         image = doctor.image,
                                         listOfTimes = listOf(date),
                                         hospitalId = doctor.hospitalId,
-                                        price = doctor.price
+                                        price = doctor.price,
+                                        isSaved = doctor.isSaved
 
                                     )
                                 )
+                                setFavoriteDoctor(idDoctorSaved.value)
+
                             }
                         }
 
@@ -280,9 +321,9 @@ fun DoctorDetailsScreen(
 @Composable
 fun TimeSlotGridItem(item: TimeSlot, isSelected: Boolean, onSelect: () -> Unit) {
     val displayMetrics = Resources.getSystem().displayMetrics
-    val screenWidthDp = (displayMetrics.widthPixels / displayMetrics.density) -28
-    val itemWidth = (screenWidthDp/3)
-    Log.d("safasdfasdfasfdasfdsafd","${itemWidth.toString()}     ${ screenWidthDp}")
+    val screenWidthDp = (displayMetrics.widthPixels / displayMetrics.density) - 28
+    val itemWidth = (screenWidthDp / 3)
+    Log.d("safasdfasdfasfdasfdsafd", "${itemWidth.toString()}     ${screenWidthDp}")
 
     Box(
         Modifier
@@ -330,8 +371,6 @@ fun TimeSlotGridItem(item: TimeSlot, isSelected: Boolean, onSelect: () -> Unit) 
 }
 
 
-
-
 //@Composable
 //fun griddd(){
 //    val pagerState = rememberPagerState {
@@ -359,7 +398,6 @@ fun TimeSlotGridItem(item: TimeSlot, isSelected: Boolean, onSelect: () -> Unit) 
 //        }
 //    }
 //}
-
 
 
 @Composable
@@ -392,7 +430,7 @@ fun SelectedDateSlot(dateOfTheWeek: DateOfTheWeek, selected: Boolean, onSelect: 
         Column(Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.height(14.dp))
             Text(
-                fontFamily= Fonts.regularFontInter,
+                fontFamily = Fonts.regularFontInter,
 
                 text = dateOfTheWeek.dateName.substring(0..3), color = if (selected) {
                     Color.White
@@ -402,7 +440,7 @@ fun SelectedDateSlot(dateOfTheWeek: DateOfTheWeek, selected: Boolean, onSelect: 
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                fontFamily= Fonts.semiBaldFontInter,
+                fontFamily = Fonts.semiBaldFontInter,
 
                 text = dateOfTheWeek.dateNumber.toString(), color = if (selected) {
                     Color.White
@@ -455,10 +493,14 @@ fun DoctorItemForDetails(doctor: HomeDoctorUiItem, withHorizontalPadding: Boolea
 
         Column(Modifier.padding(start = 18.dp)) {
             Text(
-                fontFamily= Fonts.semiBaldFontInter, text = doctor.name, fontSize = 18.sp, color = Color.Black)
+                fontFamily = Fonts.semiBaldFontInter,
+                text = doctor.name,
+                fontSize = 18.sp,
+                color = Color.Black
+            )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                fontFamily= Fonts.mediumFontInter,
+                fontFamily = Fonts.mediumFontInter,
                 text = doctor.speciality,
                 color = colorResource(id = R.color.text_gray),
                 fontSize = 12.sp
@@ -478,7 +520,7 @@ fun DoctorItemForDetails(doctor: HomeDoctorUiItem, withHorizontalPadding: Boolea
                         .padding(start = 4.dp, end = 5.dp)
                 )
                 Text(
-                    fontFamily= Fonts.mediumFontInter,
+                    fontFamily = Fonts.mediumFontInter,
 
                     text = doctor.rating,
                     fontSize = 12.sp,
@@ -494,7 +536,7 @@ fun DoctorItemForDetails(doctor: HomeDoctorUiItem, withHorizontalPadding: Boolea
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    fontFamily= Fonts.mediumFontInter,
+                    fontFamily = Fonts.mediumFontInter,
 
                     text = doctor.distance.toString(),
                     fontSize = 12.sp,

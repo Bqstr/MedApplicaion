@@ -64,7 +64,7 @@ class MainViewModel @Inject constructor(
 
     val doctors = MutableLiveData<Resource<List<HomeDoctorUiItem>>>(Resource.Unspecified())
 
-    val doctorsLiveData  =doctors.asFlow().asLiveData()
+    val doctorsLiveData = doctors.asFlow().asLiveData()
 
     val firstLaunch = MutableStateFlow<Boolean>(false)
 
@@ -91,8 +91,10 @@ class MainViewModel @Inject constructor(
         val db = FirebaseFirestore.getInstance()
         val doctorsRef = db.collection("doctor") // Ensure the collection name is correct
         val timeSlot = db.collection("TimeSlot") // Ensure the collection name is correct
+        val isSavedRef = db.collection("SavedDoctors")
 
         doctors.value = Resource.Loading()
+        Log.d("frfrfrfrfrfrfrfrf", "huh")
 
         doctorsRef
             .get()
@@ -100,7 +102,7 @@ class MainViewModel @Inject constructor(
                 val doctorsList = querySnapshot.documents.mapNotNull {
                     it.toObject(HomeDoctorUiItemWithout::class.java)
                 }
-                Log.d("frfrfrfrfrfrfrfrf",doctorsList.toString())
+                Log.d("frfrfrfrfrfrfrfrf", doctorsList.toString())
                 doctors.value = Resource.Loading()
                 timeSlot
                     .get()
@@ -109,132 +111,145 @@ class MainViewModel @Inject constructor(
                         val timeSlotList = timeSlotSnapshot.documents.mapNotNull {
                             it.toObject(TimeSlotFireBase::class.java)
                         }
-
-
-
-
-                        doctors.value = Resource.Success(doctorsList.map { doctor ->
-
-                            val myMap =
-                                timeSlotList.filter { it.doctor_id==doctor.id }.groupBy { it.time.substring(0, 10) }//TODO:check this
-
-
-                            val listOfDates = mutableListOf<DateOfTheWeek>()
-
-
-                            myMap.forEach() { key, value ->
-                                val fullTime = (value.firstOrNull()?.time ?: "")
-
-                                if (fullTime.isNotBlank()) {
-                                    val formatter =
-                                        DateTimeFormatter.ofPattern(
-                                            "yyyy-MM-dd HH:mm:ss",
-                                            Locale.ENGLISH
-                                        )
-                                    val dateTime = LocalDateTime.parse(fullTime, formatter)
-
-                                    val dayName = dateTime.dayOfWeek.name.lowercase()
-                                        .replaceFirstChar { it.uppercase() } // "Tuesday"
-                                    val dayOfMonth = dateTime.dayOfMonth // 18
-                                    val outputFormatter =
-                                        DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
-
-
-                                    val listtss =value.map {
-                                        val dateTimeForEachSlot = LocalDateTime.parse(it.time, formatter)
-                                        val formattedTimeForEachSlot  =dateTimeForEachSlot.format(outputFormatter)
-                                        Log.d("asfasdfasdfasfdd", "${it}     ${it.time}")
-                                        TimeSlot(
-                                            time = formattedTimeForEachSlot,
-                                            dateTime = it.time,
-                                            available = it.available
-                                        )
-                                    }.sortedBy { it.time }
-
-                                    Log.d("asdfasdfasdfrfrfrfrfrf",listtss.toString())
-                                    listOfDates.add(
-
-                                        DateOfTheWeek(
-                                        dateTime = fullTime,
-                                        dateName = dayName,
-                                        dateNumber = dayOfMonth,
-                                        listOfDates = listtss
-
-                                    )
-                                    )
+                        isSavedRef
+                           .whereEqualTo("uid", getUid())
+                            .get().addOnSuccessListener {
+                                val savedList = it.documents.mapNotNull {
+                                    it.toObject(SavedListFirebase::class.java)
                                 }
+                                Log.d("asdasdsadfsadfsdf", savedList.toString())
+                                doctors.value = Resource.Success(doctorsList.map { doctor ->
 
+                                    val myMap =
+                                        timeSlotList.filter { it.doctor_id == doctor.id }
+                                            .groupBy { it.time.substring(0, 10) }//TODO:check this
+
+
+                                    val listOfDates = mutableListOf<DateOfTheWeek>()
+
+
+                                    myMap.forEach() { key, value ->
+                                        val fullTime = (value.firstOrNull()?.time ?: "")
+
+                                        if (fullTime.isNotBlank()) {
+                                            val formatter =
+                                                DateTimeFormatter.ofPattern(
+                                                    "yyyy-MM-dd HH:mm:ss",
+                                                    Locale.ENGLISH
+                                                )
+                                            val dateTime = LocalDateTime.parse(fullTime, formatter)
+
+                                            val dayName = dateTime.dayOfWeek.name.lowercase()
+                                                .replaceFirstChar { it.uppercase() } // "Tuesday"
+                                            val dayOfMonth = dateTime.dayOfMonth // 18
+                                            val outputFormatter =
+                                                DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
+
+
+                                            val listtss = value.map {
+                                                val dateTimeForEachSlot =
+                                                    LocalDateTime.parse(it.time, formatter)
+                                                val formattedTimeForEachSlot =
+                                                    dateTimeForEachSlot.format(outputFormatter)
+                                                Log.d("asfasdfasdfasfdd", "${it}     ${it.time}")
+                                                TimeSlot(
+                                                    time = formattedTimeForEachSlot,
+                                                    dateTime = it.time,
+                                                    available = it.available
+                                                )
+                                            }.sortedBy { it.time }
+
+                                            Log.d("asdfasdfasdfrfrfrfrfrf", listtss.toString())
+                                            listOfDates.add(
+
+                                                DateOfTheWeek(
+                                                    dateTime = fullTime,
+                                                    dateName = dayName,
+                                                    dateNumber = dayOfMonth,
+                                                    listOfDates = listtss
+
+                                                )
+                                            )
+                                        }
+
+
+                                    }
+
+                                    val isSaved =
+                                        if (savedList.find { it.doctorId == doctor.id } != null) true else false
+
+                                    val listOfMockDates = listOf(
+                                        DateOfTheWeek(
+                                            localDateTime = LocalDateTime.now(),
+                                            dateNumber = 15,
+                                            dateName = "Monday",
+                                            listOfDates = listOf(
+                                                TimeSlot(
+                                                    time = "09:00",
+                                                    available = true,
+                                                    dateTime = Utils.getStringForSelectedTime(
+                                                        LocalDateTime.now().withHour(9)
+                                                            .withMinute(0)
+                                                    )
+                                                ),
+                                                TimeSlot(
+                                                    time = "11:00",
+                                                    available = false,
+                                                    dateTime = Utils.getStringForSelectedTime(
+                                                        LocalDateTime.now().withHour(10)
+                                                            .withMinute(0)
+                                                    )
+                                                )
+                                            )
+                                        ),
+                                        DateOfTheWeek(
+                                            localDateTime = LocalDateTime.now().plusDays(1),
+                                            dateNumber = 16,
+                                            dateName = "Tuesday",
+                                            listOfDates = listOf(
+                                                TimeSlot(
+                                                    time = "13:00",
+                                                    available = true,
+                                                    dateTime = Utils.getStringForSelectedTime(
+                                                        LocalDateTime.now().plusDays(1).withHour(13)
+                                                            .withMinute(0)
+                                                    )
+                                                ),
+                                                TimeSlot(
+                                                    time = "16:00",
+                                                    available = true,
+                                                    dateTime = Utils.getStringForSelectedTime(
+                                                        LocalDateTime.now().plusDays(1).withHour(16)
+                                                            .withMinute(0)
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                    HomeDoctorUiItem(
+                                        image = doctor.image,
+                                        id = doctor.id,
+                                        description = doctor.description,
+                                        distance = doctor.distance,
+                                        name = doctor.name,
+                                        speciality = doctor.speciality,
+                                        rating = doctor.rating.toString(),
+                                        listOfTimes = listOfDates,
+                                        hospitalId = doctor.hospitalId,
+                                        price = doctor.price,
+                                        isSaved = isSaved
+                                    )
+                                })
+
+
+                            }.addOnFailureListener {
+                                Log.d("asdasdsadfsadfsdf", "fail")
 
                             }
 
 
-                            val listOfMockDates = listOf(
-                                DateOfTheWeek(
-                                    localDateTime = LocalDateTime.now(),
-                                    dateNumber = 15,
-                                    dateName = "Monday",
-                                    listOfDates = listOf(
-                                        TimeSlot(
-                                            time = "09:00",
-                                            available = true,
-                                            dateTime = Utils.getStringForSelectedTime(
-                                                LocalDateTime.now().withHour(9).withMinute(0)
-                                            )
-                                        ),
-                                        TimeSlot(
-                                            time = "11:00",
-                                            available = false,
-                                            dateTime = Utils.getStringForSelectedTime(
-                                                LocalDateTime.now().withHour(10).withMinute(0)
-                                            )
-                                        )
-                                    )
-                                ),
-                                DateOfTheWeek(
-                                    localDateTime = LocalDateTime.now().plusDays(1),
-                                    dateNumber = 16,
-                                    dateName = "Tuesday",
-                                    listOfDates = listOf(
-                                        TimeSlot(
-                                            time = "13:00",
-                                            available = true,
-                                            dateTime = Utils.getStringForSelectedTime(
-                                                LocalDateTime.now().plusDays(1).withHour(13)
-                                                    .withMinute(0)
-                                            )
-                                        ),
-                                        TimeSlot(
-                                            time = "16:00",
-                                            available = true,
-                                            dateTime = Utils.getStringForSelectedTime(
-                                                LocalDateTime.now().plusDays(1).withHour(16)
-                                                    .withMinute(0)
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-
-
-
-
-                            HomeDoctorUiItem(
-                                image = doctor.image,
-                                id = doctor.id,
-                                description = doctor.description,
-                                distance = doctor.distance,
-                                name = doctor.name,
-                                speciality = doctor.speciality,
-                                rating = doctor.rating.toString(),
-                                listOfTimes = listOfDates,
-                                hospitalId = doctor.hospitalId,
-                                price = doctor.price
-                            )
-                        })
-
-
                     }
-                    .addOnFailureListener{e ->
+                    .addOnFailureListener { e ->
                         doctors.value = Resource.Failure(e.message.toString())
 
                     }
@@ -256,6 +271,7 @@ class MainViewModel @Inject constructor(
         val db = FirebaseFirestore.getInstance()
         val doctorsRef = db.collection("doctor") // Ensure the collection name is correct
         val timeSlot = db.collection("TimeSlot") // Ensure the collection name is correct
+        val isSavedRef = db.collection("SavedDoctors")
 
 
         doctorsRef
@@ -263,7 +279,7 @@ class MainViewModel @Inject constructor(
             .get()
             .addOnSuccessListener { querySnapshot: QuerySnapshot ->
 
-                Log.d("timessssssss","doc")
+                Log.d("timessssssss", "doc")
 
 
                 val doctorsList = querySnapshot.documents.mapNotNull {
@@ -289,76 +305,89 @@ class MainViewModel @Inject constructor(
 
 
                             val listOfDates = mutableListOf<DateOfTheWeek>()
+                            isSavedRef
+                                .whereEqualTo("uid", getUid())
+                                .get().addOnSuccessListener {
+                                    val savedList = querySnapshot.documents.mapNotNull {
+                                        it.toObject(SavedListFirebase::class.java)
+                                    }
 
-                            myMap.forEach() { key, value ->
-                                val fullTime = (value.firstOrNull()?.time ?: "")
+                                    myMap.forEach() { key, value ->
+                                        val fullTime = (value.firstOrNull()?.time ?: "")
 
-                                Log.d("sdafasdfasdfasdfasdf", fullTime)
-                                if (fullTime.isNotBlank()) {
-                                    val formatter =
-                                        DateTimeFormatter.ofPattern(
-                                            "yyyy-MM-dd HH:mm:ss",
-                                            Locale.ENGLISH
-                                        )
-                                    val dateTime = LocalDateTime.parse(fullTime, formatter)
+                                        Log.d("sdafasdfasdfasdfasdf", fullTime)
+                                        if (fullTime.isNotBlank()) {
+                                            val formatter =
+                                                DateTimeFormatter.ofPattern(
+                                                    "yyyy-MM-dd HH:mm:ss",
+                                                    Locale.ENGLISH
+                                                )
+                                            val dateTime = LocalDateTime.parse(fullTime, formatter)
 
-                                    val dayName = dateTime.dayOfWeek.name.lowercase()
-                                        .replaceFirstChar { it.uppercase() } // "Tuesday"
-                                    val dayOfMonth = dateTime.dayOfMonth // 18
-                                    val outputFormatter =
-                                        DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
-
-
-                                    listOfDates.add(DateOfTheWeek(
-                                        dateTime = fullTime,
-                                        dateName = dayName,
-                                        dateNumber = dayOfMonth,
-                                        listOfDates = value.map {
-                                            val time = dateTime.format(outputFormatter)
-                                            Log.d("asfasdfasdfasfdd", "${time}     ${it.time}")
-                                            TimeSlot(
-                                                time = time,
-                                                dateTime = it.time,
-                                                available = it.available
+                                            val dayName = dateTime.dayOfWeek.name.lowercase()
+                                                .replaceFirstChar { it.uppercase() } // "Tuesday"
+                                            val dayOfMonth = dateTime.dayOfMonth // 18
+                                            val outputFormatter =
+                                                DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
 
 
+                                            listOfDates.add(DateOfTheWeek(
+                                                dateTime = fullTime,
+                                                dateName = dayName,
+                                                dateNumber = dayOfMonth,
+                                                listOfDates = value.map {
+                                                    val time = dateTime.format(outputFormatter)
+                                                    Log.d(
+                                                        "asfasdfasdfasfdd",
+                                                        "${time}     ${it.time}"
+                                                    )
+                                                    TimeSlot(
+                                                        time = time,
+                                                        dateTime = it.time,
+                                                        available = it.available
+
+
+                                                    )
+                                                }
+
+                                            )
                                             )
                                         }
 
-                                    )
-                                    )
+
+                                    }
+
+
+                                    val doctor = doctorsList.firstOrNull()
+
+                                    val isSaved =
+                                        if (savedList.find { it.doctorId == doctor?.id } != null) true else false
+
+                                    if (doctor != null) {
+                                        onSuccess(
+                                            HomeDoctorUiItem(
+                                                image = doctor.image,
+                                                id = doctor.id,
+                                                description = doctor.description,
+                                                distance = doctor.distance,
+                                                name = doctor.name,
+                                                speciality = doctor.speciality,
+                                                rating = doctor.rating.toString(),
+                                                listOfTimes = listOfDates,
+                                                hospitalId = doctor.hospitalId,
+                                                price = doctor.price,
+                                                isSaved = isSaved
+                                            )
+                                        )
+
+
+                                    }
+
                                 }
 
-
-                            }
-
-
-                            val doctor = doctorsList.firstOrNull()
-
-                            if (doctor != null) {
-
-                                onSuccess(
-                                    HomeDoctorUiItem(
-                                        image = doctor.image,
-                                        id = doctor.id,
-                                        description = doctor.description,
-                                        distance = doctor.distance,
-                                        name = doctor.name,
-                                        speciality = doctor.speciality,
-                                        rating = doctor.rating.toString(),
-                                        listOfTimes = listOfDates,
-                                        hospitalId = doctor.hospitalId,
-                                        price = doctor.price
-                                    )
-                                )
-
-
-                            }
-
-
                         }
-                        .addOnFailureListener{
-                            Log.d("timessssssss","no time list")
+                        .addOnFailureListener {
+                            Log.d("timessssssss", "no time list")
                         }
                 } else {
 
@@ -379,9 +408,29 @@ class MainViewModel @Inject constructor(
 
     }
 
+    fun setFavoriteDoctor(doctorId: Int, setFavorite: Boolean) {
+        val db = FirebaseFirestore.getInstance()
+        val isSavedRef = db.collection("SavedDoctors")
+
+        val isSavedData = SavedListFirebase(uid = getUid(), doctorId = doctorId)
+
+        if (setFavorite) {
+            isSavedRef.add(isSavedData)
+        } else {
+            isSavedRef.whereEqualTo("uid", getUid()).whereEqualTo("doctorId", doctorId).get()
+                .addOnSuccessListener {
+                    for (document in it) {
+                        isSavedRef.document(document.id).delete()
+                    }
+                }
+        }
+
+
+    }
+
     fun getUid(): String {
-        val s =uidManager.getUId()
-        Log.d("sadfasdfasdfasdfasdf",s)
+        val s = uidManager.getUId()
+        Log.d("sadfasdfasdfasdfasdf", s)
         return s
     }
 
@@ -477,11 +526,15 @@ class MainViewModel @Inject constructor(
 
         db.collection("Schedule").add(newScheduleItem)
             .addOnSuccessListener {
-                Log.d("sadkjfadfhkajsd","here")
+                Log.d("sadkjfadfhkajsd", "here")
 
-                changeTimeAviabilityOfScheduleOfDoctor(doctorId = doctor_id,time =time, value = false, onSuccess = {
-                    getAllDoctors()
-                })
+                changeTimeAviabilityOfScheduleOfDoctor(
+                    doctorId = doctor_id,
+                    time = time,
+                    value = false,
+                    onSuccess = {
+                        getAllDoctors()
+                    })
                 //  onResult(true, "User registered and data saved")
             }
             .addOnFailureListener { e ->
@@ -491,7 +544,12 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun changeTimeAviabilityOfScheduleOfDoctor(value:Boolean, time:String, doctorId:Int, onSuccess:() ->Unit){
+    fun changeTimeAviabilityOfScheduleOfDoctor(
+        value: Boolean,
+        time: String,
+        doctorId: Int,
+        onSuccess: () -> Unit
+    ) {
 //        val database = FirebaseDatabase.getInstance()
 //        val ref = database.getReference("TimeSlot")
 //
@@ -543,13 +601,13 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun cancelSchedule(doctor_id: Int,time:String){
+    fun cancelSchedule(doctor_id: Int, time: String) {
         val db = FirebaseFirestore.getInstance()
 
         db.collection("Schedule")
             .whereEqualTo("uid", getUid())
             .whereEqualTo("doctor_id", doctor_id)
-            .whereEqualTo("time",time)
+            .whereEqualTo("time", time)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -558,7 +616,7 @@ class MainViewModel @Inject constructor(
                         .update("status", "Canceled")
 
 
-                    changeTimeAviabilityOfScheduleOfDoctor(true,time,doctor_id) {
+                    changeTimeAviabilityOfScheduleOfDoctor(true, time, doctor_id) {
                         getScheduleList()
                     }
 
@@ -570,7 +628,6 @@ class MainViewModel @Inject constructor(
             }
 
     }
-
 
 
     fun register(
@@ -613,10 +670,11 @@ class MainViewModel @Inject constructor(
                 } else {
                     val exception = task.exception
                     if (exception is FirebaseAuthUserCollisionException) {
-                        loginByEmailAndPassword(email,password,onSuccess)
+                        loginByEmailAndPassword(email, password, onSuccess)
                     } else {
                         Log.e("Auth", "Registration failed: ${exception?.message}")
-                    }                }
+                    }
+                }
             }
 
     }
@@ -944,7 +1002,7 @@ class MainViewModel @Inject constructor(
         val doctorsRef = db.collection("ChatRoom") // Ensure the collection name is correct
 
         doctorsRef
-            .whereEqualTo("userUid",getUid())
+            .whereEqualTo("userUid", getUid())
             .get()
             .addOnSuccessListener { querySnapshot: QuerySnapshot ->
 
@@ -986,7 +1044,7 @@ class MainViewModel @Inject constructor(
                                 doctorName = it.name,
                                 lastMessage = messagesList.last().message,
                                 lastMessageTime = messagesList.last().time,
-                                doctorImage =it.image,
+                                doctorImage = it.image,
                                 doctorNumber = it.number,
                             )
                         })
@@ -1089,7 +1147,7 @@ class MainViewModel @Inject constructor(
             }
     }
 
-    fun createUser(auth: FirebaseAuth,name:String,email:String,onSuccess: () -> Unit) {
+    fun createUser(auth: FirebaseAuth, name: String, email: String, onSuccess: () -> Unit) {
         val db = FirebaseFirestore.getInstance()
 
         val userId = auth.currentUser?.uid ?: return
@@ -1118,15 +1176,15 @@ class MainViewModel @Inject constructor(
 
 
     fun addDocotor(
-         name:String,
-         description:String,
-         hospitalId :Int,
-        id:Int,
-         image:String,
-         number:String,
-         price:String,
-         rating:Int,
-         distance:String
+        name: String,
+        description: String,
+        hospitalId: Int,
+        id: Int,
+        image: String,
+        number: String,
+        price: String,
+        rating: Int,
+        distance: String
 
     ) {
         val db = FirebaseFirestore.getInstance()
@@ -1142,7 +1200,7 @@ class MainViewModel @Inject constructor(
             "price" to price,
             "rating" to rating,
             "nameLowercase" to name.lowercase()
-            )
+        )
 
         db.collection("doctor").add(newMessage)
             .addOnSuccessListener {
@@ -1179,7 +1237,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun addAppointmentSlots(doctorId:Int) {
+    fun addAppointmentSlots(doctorId: Int) {
         val db = FirebaseFirestore.getInstance()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val startHour = 13
@@ -1191,12 +1249,12 @@ class MainViewModel @Inject constructor(
         val days = listOf(now, now.plusDays(1))
 
         for (day in days) {
-            var hour =startHour
+            var hour = startHour
             while (hour < endHour) {
                 val time = LocalDateTime.of(day, LocalTime.of(hour, 0))
                 val formattedTime = time.format(formatter)
-                Log.d("eedededededed",time.toString())
-                Log.d("eedededededed",formattedTime.toString())
+                Log.d("eedededededed", time.toString())
+                Log.d("eedededededed", formattedTime.toString())
 
 
                 val appointment = hashMapOf(
@@ -1217,12 +1275,18 @@ class MainViewModel @Inject constructor(
 
                 idCounter++
 
-                hour+=1
+                hour += 1
             }
         }
     }
 
 }
+
+
+data class SavedListFirebase(val uid: String, val doctorId: Int) {
+    constructor() : this("", 0)
+}
+
 
 data class UserFirebase(
     val email: String = "",
