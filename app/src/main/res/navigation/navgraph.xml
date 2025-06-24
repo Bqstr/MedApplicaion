@@ -92,7 +92,11 @@
         android:id="@+id/profileFragment"
         android:name="io.oitech.med_application.fragments.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_savedItemsFragments"
+            app:destination="@id/savedItemsFragments" />
+    </fragment>
     <fragment
         android:id="@+id/doctorsListFragment"
         android:name="io.oitech.med_application.fragments.doctor_list.DoctorsListFragment"
@@ -168,4 +172,13 @@
         android:name="io.oitech.med_application.fragments.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/savedItemsFragments"
+        android:name="io.oitech.med_application.fragments.profile.SavedItemsFragments"
+        android:label="fragment_saved_items_fragments"
+        tools:layout="@layout/fragment_saved_items_fragments" >
+        <action
+            android:id="@+id/action_savedItemsFragments_to_doctorDetailFragment"
+            app:destination="@id/doctorDetailFragment" />
+    </fragment>
 </navigation>

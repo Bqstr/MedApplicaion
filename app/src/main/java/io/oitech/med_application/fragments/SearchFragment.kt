@@ -50,6 +50,7 @@ class SearchFragment : Fragment() {
         }
 
         view.findViewById<ComposeView>(R.id.search_compose).setContent{
+            //TODO:remember to implement
             SearchScreen(
                     navigateBack = navigateBack,
                     navigateToDoctor = {},

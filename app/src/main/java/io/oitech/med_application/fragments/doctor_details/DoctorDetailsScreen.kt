@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -453,7 +454,27 @@ fun SelectedDateSlot(dateOfTheWeek: DateOfTheWeek, selected: Boolean, onSelect: 
     }
 }
 
-
+@Composable
+@Preview(backgroundColor = 0, showBackground = true)
+ fun doctorPreview(){
+     Box(Modifier.background(Color.White)) {
+         DoctorItemForDetails(
+             HomeDoctorUiItem(
+                 distance = "distance",
+                 hospitalId = 1,
+                 id = 1,
+                 number = "number",
+                 isSaved = false,
+                 listOfTimes = emptyList(),
+                 description = "description",
+                 rating = "4.0",
+                 name = "name",
+                 speciality = "scpeiality",
+                 price = "4000.0"
+             ), false
+         )
+     }
+ }
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DoctorItemForDetails(doctor: HomeDoctorUiItem, withHorizontalPadding: Boolean) {
@@ -520,6 +541,7 @@ fun DoctorItemForDetails(doctor: HomeDoctorUiItem, withHorizontalPadding: Boolea
                         .padding(start = 4.dp, end = 5.dp)
                 )
                 Text(
+                    color  = colorResource(id = R.color.blue),
                     fontFamily = Fonts.mediumFontInter,
 
                     text = doctor.rating,

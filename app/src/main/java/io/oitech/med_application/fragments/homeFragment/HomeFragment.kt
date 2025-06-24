@@ -16,6 +16,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -69,6 +70,17 @@ class HomeFragment : Fragment(), OnItemClickListener {
         val recyclerView: RecyclerView = view.findViewById(R.id.home_doctors_recuclerView)
 
 
+//        viewModel.addDocotor(
+//            name = "Др. Асылбек Назарбаев",
+//            description = "Сертифицированный кардиолог, специализирующийся на интервенционной кардиологии и хирургии сердца.",
+//            hospitalId = 102,
+//            id = 1002,
+//            image = "https://example.com/images/dr_asylbek.jpg",
+//            number = "+77015551234",
+//            price = "20000 ₸",
+//            rating = 5,
+//            distance = "1.2 км"
+//        )
 
 
         recyclerView.layoutManager =
@@ -80,6 +92,8 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
 
         recyclerView.addItemDecoration(StartEndPaddingItemDecoration(50, 50))
+
+
 
 
         view.findViewById<TextView>(R.id.see_all_text).setOnClickListener {

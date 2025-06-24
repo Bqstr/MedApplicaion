@@ -6,6 +6,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import io.oitech.med_application.fragments.homeFragment.DateOfTheWeek
+import io.oitech.med_application.fragments.homeFragment.TimeSlot
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -23,6 +25,11 @@ object Utils {
 
         val parsedDateTime = LocalDateTime.parse(string, formatter)
         return parsedDateTime
+    }
+
+    fun sortDateStrings(dateList: List<DateOfTheWeek>): List<DateOfTheWeek> {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        return dateList.sortedBy { LocalDateTime.parse(it.dateTime, formatter) }
     }
 
 

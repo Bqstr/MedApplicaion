@@ -67,6 +67,16 @@ class ProfileFragment : Fragment() {
             showLogoutDialogAlert(requireContext())
         }
 
+        val navigateToSavedDoctors ={
+            findNavController().navigate(R.id.action_profileFragment_to_savedItemsFragments)
+        }
+
+
+        view.findViewById<LinearLayout>(R.id.saved_items_profile).setOnClickListener{
+            navigateToSavedDoctors.invoke()
+        }
+
+
 
 
 
