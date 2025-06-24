@@ -64,17 +64,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val auth = Firebase.auth
 
-
-
-
-
-
-
-
-
-
-
-
         binding.callAmbulance.setOnClickListener {
             dialEmergencyNumber("103")
         }
@@ -107,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                     navController.navigate(
                         R.id.action_login_fragment_to_homeScreen, null,
                         NavOptions.Builder()
-                            .setPopUpTo(R.id.homeFragment, true) // Clears all previous fragments
+                            .setPopUpTo(R.id.loginFragment, true) // Clears all previous fragments
                             .build()
                     )
                 }
@@ -167,63 +156,63 @@ class MainActivity : AppCompatActivity() {
 
     var myNavController: NavController? = null
     fun signIn(onSuccess: () -> Unit) {
-//        val signInIntent = googleSignInClient.signInIntent
-//        startActivityForResult(signInIntent, RC_SIGN_IN)
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-//        if (requestCode == RC_SIGN_IN) {
-//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-//            try {
-//                val account = task.getResult(ApiException::class.java)!!
-//                firebaseAuthWithGoogle(account.idToken!!, auth = Firebase.auth)
-//            } catch (e: ApiException) {
-//                Toast.makeText(this, "Sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)!!
+                firebaseAuthWithGoogle(account.idToken!!, auth = Firebase.auth)
+            } catch (e: ApiException) {
+                Toast.makeText(this, "Sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
-//    private fun firebaseAuthWithGoogle(idToken: String, auth: FirebaseAuth) {
-//        val credential = GoogleAuthProvider.getCredential(idToken, null)
-//        auth.signInWithCredential(credential)
-//            .addOnCompleteListener(this) { task ->
-//                if (task.isSuccessful) {
-//                    val user = auth.currentUser
-//                    Log.d("sadfsdasdafdsfsadfasdf",user?.uid?:"")
-//                    if (user != null && user.email?.isNotBlank() == true) {
-//                        myNavController?.navigate(
-//                            R.id.action_login_fragment_to_homeScreen, null, NavOptions.Builder()
-//                                .setPopUpTo(
-//                                    R.id.homeFragment,
-//                                    true
-//                                ) // Clears all previous fragments
-//                                .build()
-//                        )
-//
-//                        mainViewModel.createUser(
-//                            auth = auth,
-//                            name = if (user.displayName?.isBlank() == true) {
-//                                user.email ?: ""
-//                            } else {
-//                                user.displayName ?: ""
-//                            },
-//                            email = user.email!! , onSuccess = {
-//
-//                            }
-//                        )
-//
-//                        showSuccessAlert(this)
-//
-//                        Toast.makeText(this, "Welcome ${user?.displayName}", Toast.LENGTH_SHORT)
-//                            .show()
-//                    }
-//                } else {
-//                    Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//    }
+    private fun firebaseAuthWithGoogle(idToken: String, auth: FirebaseAuth) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    Log.d("sadfsdasdafdsfsadfasdf",user?.uid?:"")
+                    if (user != null && user.email?.isNotBlank() == true) {
+                        myNavController?.navigate(
+                            R.id.action_login_fragment_to_homeScreen, null, NavOptions.Builder()
+                                .setPopUpTo(
+                                    R.id.homeFragment,
+                                    true
+                                ) // Clears all previous fragments
+                                .build()
+                        )
+
+                        mainViewModel.createUser(
+                            auth = auth,
+                            name = if (user.displayName?.isBlank() == true) {
+                                user.email ?: ""
+                            } else {
+                                user.displayName ?: ""
+                            },
+                            email = user.email!! , onSuccess = {
+
+                            }
+                        )
+
+                        showSuccessAlert(this)
+
+                        Toast.makeText(this, "Welcome ${user?.displayName}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                } else {
+                    Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
 
 
     companion object {

@@ -6,13 +6,14 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -20,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.oitech.med_application.MainActivity
 import io.oitech.med_application.R
 import io.oitech.med_application.fragments.MainViewModel
-import io.oitech.med_application.fragments.login.NumberVerificationFragment
 import io.oitech.med_application.fragments.login.PhoneVerificationData
 
 // TODO: Rename parameter arguments, choose names that match
@@ -60,21 +60,24 @@ class RegisterGragment : Fragment() {
         val email = view.findViewById<EditText>(R.id.emailRegister)
         val password = view.findViewById<EditText>(R.id.passwordRegister)
         val name = view.findViewById<EditText>(R.id.user_name_register)
+        val checkbox = view.findViewById<CheckBox>(R.id.registration_checkbox)
 
         email.addTextChangedListener {
             when {
                 Patterns.EMAIL_ADDRESS.matcher(it).matches() -> {
-                    Log.d("asdfasfdasfdafsd","email")
+                    Log.d("asdfasfdasfdafsd", "email")
                     viewModel.isEmailAuthorizationForRegister.postValue(true)
                 }
-                Patterns.PHONE.matcher(it).matches() ->{
-                    Log.d("asdfasfdasfdafsd","phone")
+
+                Patterns.PHONE.matcher(it).matches() -> {
+                    Log.d("asdfasfdasfdafsd", "phone")
 
                     viewModel.isEmailAuthorizationForRegister.postValue(false)
 
                 }
+
                 else -> {
-                    Log.d("asdfasfdasfdafsd","else")
+                    Log.d("asdfasfdasfdafsd", "else")
                     viewModel.isEmailAuthorizationForRegister.postValue(true)
 
                 }
@@ -82,15 +85,15 @@ class RegisterGragment : Fragment() {
         }
 
 
-        viewModel.isEmailAuthorizationForRegister.observe(viewLifecycleOwner){
+        viewModel.isEmailAuthorizationForRegister.observe(viewLifecycleOwner) {
 
-            if(it) {
-                Log.d("asdfasfdasfdafsd","set phone")
+            if (it) {
+                Log.d("asdfasfdasfdafsd", "set phone")
 
                 view.findViewById<EditText>(R.id.emailRegister)
                     .setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.group, 0, 0, 0)
-            }else{
-                Log.d("asdfasfdasfdafsd","set email")
+            } else {
+                Log.d("asdfasfdasfdafsd", "set email")
 
                 view.findViewById<EditText>(R.id.emailRegister)
                     .setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.phone, 0, 0, 0)
@@ -99,37 +102,55 @@ class RegisterGragment : Fragment() {
 
 
 
-
-
+        view.findViewById<LinearLayout>(R.id.registration_checkbox_layout).setOnClickListener {
+            checkbox.isChecked = !checkbox.isChecked
+        }
 
 
         val navController = findNavController()
 
-        view.findViewById<Button>(R.id.sign_up_button)?.setOnClickListener {
+        view.findViewById<LinearLayout>(R.id.sign_up_button)?.setOnClickListener {
             val emailText = email.text.toString().trim()
             val passwordText = password.text.toString().trim()
             val nameText = name.text.toString().trim()
+            val checkboxState = checkbox.isChecked
 
 
             // Check if fields are not empty
-            if (emailText.isEmpty() || passwordText.isEmpty()) {
+            Log.d("asdfasdfasdfasdf", "checkbox state ${checkboxState}")
+
+            if (emailText.isEmpty() || passwordText.isEmpty() || !checkboxState) {
+                Log.d("asdfasdfasdfasdf", "here blin ")
                 // You might want to show a Toast or error message here
                 return@setOnClickListener
             }
 
-            if(viewModel.isEmailAuthorizationForRegister.value == true) {
+            Log.d("asfasdfasdfasdfasdf","created email and password ${emailText} ${passwordText}")
+            if (viewModel.isEmailAuthorizationForRegister.value == true) {
+
                 viewModel.register(emailText, passwordText, onSuccess = {
                     MainActivity.showSuccessAlert(requireContext())
-                    navController.navigate(R.id.action_register_fragment_to_homeScreen)
-                    findNavController().clearBackStack(R.id.registerFragment)
-                    findNavController().clearBackStack(R.id.loginFragment)
+                    navController.navigate(
+                        R.id.action_register_fragment_to_homeScreen,
+                        null,
+                        NavOptions.Builder().setPopUpTo(R.id.registerFragment, true).build()
+                    )
+
+
                 }, nameText, auth = Firebase.auth)
-            }else{
-                viewModel.sendVerificationCode(emailText,requireActivity())
-                val bundle =Bundle()
-                val userData = PhoneVerificationData(name = nameText, password =passwordText , phone = emailText)
-                bundle.putParcelable("user_number",userData)
-                findNavController().navigate(R.id.action_registerFragment_to_numberVerificationFragment,bundle)
+            } else {
+                viewModel.sendVerificationCode(emailText, requireActivity())
+                val bundle = Bundle()
+                val userData = PhoneVerificationData(
+                    name = nameText,
+                    password = passwordText,
+                    phone = emailText
+                )
+                bundle.putParcelable("user_number", userData)
+                findNavController().navigate(
+                    R.id.action_registerFragment_to_numberVerificationFragment,
+                    bundle
+                )
 
 
             }

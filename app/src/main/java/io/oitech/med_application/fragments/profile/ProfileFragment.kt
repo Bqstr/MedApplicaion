@@ -99,10 +99,11 @@ class ProfileFragment : Fragment() {
                 R.id.loginFragment, // Replace with your destination fragment ID
                 null,
                 NavOptions.Builder()
-                    .setPopUpTo(R.id.nav_host_fragment, inclusive = true) // Clears the entire back stack
+                    .setPopUpTo(R.id.profileFragment, inclusive = true) // Clears the entire back stack
                     .setLaunchSingleTop(true)
                     .build()
             )
+            findNavController().clearBackStack(R.id.loginFragment)
             alertDialog.dismiss()
             viewModel.logoutUser()
 

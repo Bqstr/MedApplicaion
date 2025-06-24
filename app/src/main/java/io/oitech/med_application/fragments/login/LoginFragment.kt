@@ -117,8 +117,6 @@ class LoginFragment : Fragment() {
             navController.navigate(R.id.action_login_fragment_to_register, null)
         }
 
-
-
         view.findViewById<ConstraintLayout>(R.id.google_sign_in).setOnClickListener {
             mainActivity.signIn {
                 navController.navigate(
